@@ -1,0 +1,10 @@
+autopep8==1.5.3
+grpcio==1.30.0
+grpcio-tools==1.30.0
+numpy==1.19.0
+Pillow==7.2.0
+protobuf==3.12.2
+pycodestyle==2.6.0
+pydantic==1.5.1
+six==1.15.0
+toml==0.10.1

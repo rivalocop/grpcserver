@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package thesis;
+
+service Motion{
+    rpc MotionStreaming (stream MotionRequest) returns (stream MotionResponse);
+}
+
+message MotionRequest {
+    string userId = 1;
+    string expectedLabel = 2;
+    bytes frame = 3;
+    int32 width = 4;
+    int32 height = 5;
+}
+
+message MotionResponse{
+    bool result = 1;
+}
