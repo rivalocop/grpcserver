@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import tensorflow as tf
 
 
 class ImFace:
@@ -37,6 +38,7 @@ class ImFace:
                 face = self.image[start_y:end_y, start_x:end_x]
                 face = cv2.resize(face, (64, 64))
                 face = face.astype("float") / 255.0
+                face = tf.keras.preprocessing.image.img_to_array(face)
                 face = np.expand_dims(face, axis=0)
 
         return face
