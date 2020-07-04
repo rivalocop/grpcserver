@@ -8,13 +8,14 @@ class ImMotion:
         self.model = model
         self.threshold = 0.6
         self.expected_label = expected_label
+        self.result = self.__predict()
 
-    def predict(self):
-        result = {"isPredicted": False}
+    def __predict(self):
+        result = False
         predictions = self.model.predict(self.face)[0]
         j = np.argmax(predictions)
         j = int(j)
         label = self.labels.classes_[j]
         if predictions[j] > self.threshold and self.expected_label is label:
-            result["isPredicted"] = True
+            result = True
         return result
