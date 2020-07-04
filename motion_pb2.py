@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\"d\n\rMotionRequest\x12\x0e\n\x06userId\x18\x01 \x01(\t\x12\x15\n\rexpectedLabel\x18\x02 \x01(\t\x12\r\n\x05\x66rame\x18\x03 \x01(\x0c\x12\r\n\x05width\x18\x04 \x01(\x05\x12\x0e\n\x06height\x18\x05 \x01(\x05\" \n\x0eMotionResponse\x12\x0e\n\x06result\x18\x01 \x01(\x08\x32N\n\x06Motion\x12\x44\n\x0fMotionStreaming\x12\x15.thesis.MotionRequest\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\"E\n\rMotionRequest\x12\x0e\n\x06userId\x18\x01 \x01(\t\x12\x15\n\rexpectedLabel\x18\x02 \x01(\t\x12\r\n\x05\x66rame\x18\x03 \x01(\x0c\" \n\x0eMotionResponse\x12\x0e\n\x06result\x18\x01 \x01(\x08\x32N\n\x06Motion\x12\x44\n\x0fMotionStreaming\x12\x15.thesis.MotionRequest\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x62\x06proto3'
 )
 
 
@@ -54,20 +54,6 @@ _MOTIONREQUEST = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='width', full_name='thesis.MotionRequest.width', index=3,
-      number=4, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='height', full_name='thesis.MotionRequest.height', index=4,
-      number=5, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -81,7 +67,7 @@ _MOTIONREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=24,
-  serialized_end=124,
+  serialized_end=93,
 )
 
 
@@ -112,8 +98,8 @@ _MOTIONRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=126,
-  serialized_end=158,
+  serialized_start=95,
+  serialized_end=127,
 )
 
 DESCRIPTOR.message_types_by_name['MotionRequest'] = _MOTIONREQUEST
@@ -143,8 +129,8 @@ _MOTION = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=160,
-  serialized_end=238,
+  serialized_start=129,
+  serialized_end=207,
   methods=[
   _descriptor.MethodDescriptor(
     name='MotionStreaming',
