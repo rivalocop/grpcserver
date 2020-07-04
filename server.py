@@ -1,14 +1,19 @@
 import io
 import logging
-
 import grpc
-
 import motion_pb2
 import motion_pb2_grpc
-from concurrent import futures
 import numpy as np
 import cv2
+import settings
+from face_detector.face_detect import ImFace
+from concurrent import futures
 from PIL import Image
+
+
+print("[INFO] loading face detector...")
+net = cv2.dnn.readNetFromCaffe(settings.DEPLOY_FILE, settings.CAFFE_MODEL)
+print("[INFO] loading face detector done...")
 
 
 class MotionServicer(motion_pb2_grpc.MotionServicer):
@@ -16,6 +21,9 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
         for ri in request_iterator:
             with io.BytesIO(ri.frame) as f:
                 image = Image.open(f)
+                image_as_array = np.asarray(image)
+                extracted_face = ImFace(image_as_array, net).face
+
                 # image = np.frombuffer(ri.frame, dtype='uint8')
                 # image = image.reshape(ri.width, ri.height)
                 # print(image)
