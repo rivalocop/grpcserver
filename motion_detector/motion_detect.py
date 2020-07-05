@@ -6,7 +6,7 @@ class ImMotion:
         self.face = face
         self.labels = labels
         self.model = model
-        self.threshold = 0.6
+        self.threshold = 0.5
         self.expected_label = expected_label
         self.result = self.__predict()
 
@@ -16,6 +16,6 @@ class ImMotion:
         j = np.argmax(predictions)
         j = int(j)
         label = self.labels.classes_[j]
-        if predictions[j] > self.threshold and self.expected_label is label:
+        if predictions[j] > self.threshold and self.expected_label == label:
             result = True
         return result

@@ -3,9 +3,16 @@ import numpy as np
 import tensorflow as tf
 
 
+def prepare_image(image):
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+    image = cv2.resize(image, (224, 224))
+    image = cv2.flip(image, 1)
+    return image
+
+
 class ImFace:
     def __init__(self, image, net):
-        self.image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        self.image = prepare_image(image)
         self.net = net
         self.height = self.__get_shape()[0]
         self.width = self.__get_shape()[1]
@@ -38,7 +45,7 @@ class ImFace:
                 face = self.image[start_y:end_y, start_x:end_x]
                 face = cv2.resize(face, (64, 64))
                 face = face.astype("float") / 255.0
-                face = tf.keras.preprocessing.image.img_to_array(face)
+                # face = tf.keras.preprocessing.image.img_to_array(face)
                 face = np.expand_dims(face, axis=0)
 
         return face
