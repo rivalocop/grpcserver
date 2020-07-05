@@ -6,7 +6,7 @@ class ImMotion:
         self.face = face
         self.labels = labels
         self.model = model
-        self.threshold = 0.6
+        self.threshold = 0.5
         self.expected_label = expected_label
         self.result = self.__predict()
 

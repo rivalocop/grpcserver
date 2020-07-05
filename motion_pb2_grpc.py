@@ -14,9 +14,14 @@ class MotionStub(object):
         Args:
             channel: A grpc.Channel.
         """
-        self.MotionStreaming = channel.stream_stream(
-                '/thesis.Motion/MotionStreaming',
-                request_serializer=motion__pb2.MotionRequest.SerializeToString,
+        self.RegisterStreaming = channel.stream_stream(
+                '/thesis.Motion/RegisterStreaming',
+                request_serializer=motion__pb2.UserRegister.SerializeToString,
+                response_deserializer=motion__pb2.MotionResponse.FromString,
+                )
+        self.AuthenticateStreaming = channel.stream_stream(
+                '/thesis.Motion/AuthenticateStreaming',
+                request_serializer=motion__pb2.UserAuthenticate.SerializeToString,
                 response_deserializer=motion__pb2.MotionResponse.FromString,
                 )
 
@@ -24,7 +29,13 @@ class MotionStub(object):
 class MotionServicer(object):
     """Missing associated documentation comment in .proto file."""
 
-    def MotionStreaming(self, request_iterator, context):
+    def RegisterStreaming(self, request_iterator, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
+    def AuthenticateStreaming(self, request_iterator, context):
         """Missing associated documentation comment in .proto file."""
         context.set_code(grpc.StatusCode.UNIMPLEMENTED)
         context.set_details('Method not implemented!')
@@ -33,9 +44,14 @@ class MotionServicer(object):
 
 def add_MotionServicer_to_server(servicer, server):
     rpc_method_handlers = {
-            'MotionStreaming': grpc.stream_stream_rpc_method_handler(
-                    servicer.MotionStreaming,
-                    request_deserializer=motion__pb2.MotionRequest.FromString,
+            'RegisterStreaming': grpc.stream_stream_rpc_method_handler(
+                    servicer.RegisterStreaming,
+                    request_deserializer=motion__pb2.UserRegister.FromString,
+                    response_serializer=motion__pb2.MotionResponse.SerializeToString,
+            ),
+            'AuthenticateStreaming': grpc.stream_stream_rpc_method_handler(
+                    servicer.AuthenticateStreaming,
+                    request_deserializer=motion__pb2.UserAuthenticate.FromString,
                     response_serializer=motion__pb2.MotionResponse.SerializeToString,
             ),
     }
@@ -49,7 +65,7 @@ class Motion(object):
     """Missing associated documentation comment in .proto file."""
 
     @staticmethod
-    def MotionStreaming(request_iterator,
+    def RegisterStreaming(request_iterator,
             target,
             options=(),
             channel_credentials=None,
@@ -58,8 +74,24 @@ class Motion(object):
             wait_for_ready=None,
             timeout=None,
             metadata=None):
-        return grpc.experimental.stream_stream(request_iterator, target, '/thesis.Motion/MotionStreaming',
-            motion__pb2.MotionRequest.SerializeToString,
+        return grpc.experimental.stream_stream(request_iterator, target, '/thesis.Motion/RegisterStreaming',
+            motion__pb2.UserRegister.SerializeToString,
+            motion__pb2.MotionResponse.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def AuthenticateStreaming(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_stream(request_iterator, target, '/thesis.Motion/AuthenticateStreaming',
+            motion__pb2.UserAuthenticate.SerializeToString,
             motion__pb2.MotionResponse.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)
