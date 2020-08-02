@@ -3,22 +3,20 @@ syntax = "proto3";
 package thesis;
 
 service Motion{
-    rpc RegisterStreaming (stream UserRegister) returns (stream MotionResponse);
-    rpc AuthenticateStreaming (stream UserAuthenticate) returns (stream MotionResponse);
+    rpc MotionStreaming (stream RequestImage) returns (stream MotionResponse);
+    rpc RegisterFaceIndexes (UserFormData) returns (UserFormData);
+}
+
+
+message UserFormData {
+    string userId = 1;
+    bool isFaceVerify = 2;
 }
 
 message RequestImage {
     string expectedLabel = 1;
     bytes imagePayload = 2;
-}
-
-message UserRegister {
-    RequestImage frame = 1;
-}
-
-message UserAuthenticate {
-    string userId = 1;
-    RequestImage frame = 2;
+    UserFormData userInfo = 3;
 }
 
 message MotionResponse{

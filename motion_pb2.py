@@ -19,10 +19,49 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\";\n\x0cRequestImage\x12\x15\n\rexpectedLabel\x18\x01 \x01(\t\x12\x14\n\x0cimagePayload\x18\x02 \x01(\x0c\"3\n\x0cUserRegister\x12#\n\x05\x66rame\x18\x01 \x01(\x0b\x32\x14.thesis.RequestImage\"G\n\x10UserAuthenticate\x12\x0e\n\x06userId\x18\x01 \x01(\t\x12#\n\x05\x66rame\x18\x02 \x01(\x0b\x32\x14.thesis.RequestImage\" \n\x0eMotionResponse\x12\x0e\n\x06result\x18\x01 \x01(\x08\x32\x9e\x01\n\x06Motion\x12\x45\n\x11RegisterStreaming\x12\x14.thesis.UserRegister\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12M\n\x15\x41uthenticateStreaming\x12\x18.thesis.UserAuthenticate\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\"4\n\x0cUserFormData\x12\x0e\n\x06userId\x18\x01 \x01(\t\x12\x14\n\x0cisFaceVerify\x18\x02 \x01(\x08\"c\n\x0cRequestImage\x12\x15\n\rexpectedLabel\x18\x01 \x01(\t\x12\x14\n\x0cimagePayload\x18\x02 \x01(\x0c\x12&\n\x08userInfo\x18\x03 \x01(\x0b\x32\x14.thesis.UserFormData\" \n\x0eMotionResponse\x12\x0e\n\x06result\x18\x01 \x01(\x08\x32\x90\x01\n\x06Motion\x12\x43\n\x0fMotionStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12\x41\n\x13RegisterFaceIndexes\x12\x14.thesis.UserFormData\x1a\x14.thesis.UserFormDatab\x06proto3'
 )
 
 
+
+
+_USERFORMDATA = _descriptor.Descriptor(
+  name='UserFormData',
+  full_name='thesis.UserFormData',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='userId', full_name='thesis.UserFormData.userId', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='isFaceVerify', full_name='thesis.UserFormData.isFaceVerify', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=24,
+  serialized_end=76,
+)
 
 
 _REQUESTIMAGE = _descriptor.Descriptor(
@@ -47,34 +86,9 @@ _REQUESTIMAGE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=24,
-  serialized_end=83,
-)
-
-
-_USERREGISTER = _descriptor.Descriptor(
-  name='UserRegister',
-  full_name='thesis.UserRegister',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
     _descriptor.FieldDescriptor(
-      name='frame', full_name='thesis.UserRegister.frame', index=0,
-      number=1, type=11, cpp_type=10, label=1,
+      name='userInfo', full_name='thesis.RequestImage.userInfo', index=2,
+      number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -91,47 +105,8 @@ _USERREGISTER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=85,
-  serialized_end=136,
-)
-
-
-_USERAUTHENTICATE = _descriptor.Descriptor(
-  name='UserAuthenticate',
-  full_name='thesis.UserAuthenticate',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='userId', full_name='thesis.UserAuthenticate.userId', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='frame', full_name='thesis.UserAuthenticate.frame', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=138,
-  serialized_end=209,
+  serialized_start=78,
+  serialized_end=177,
 )
 
 
@@ -162,17 +137,22 @@ _MOTIONRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=211,
-  serialized_end=243,
+  serialized_start=179,
+  serialized_end=211,
 )
 
-_USERREGISTER.fields_by_name['frame'].message_type = _REQUESTIMAGE
-_USERAUTHENTICATE.fields_by_name['frame'].message_type = _REQUESTIMAGE
+_REQUESTIMAGE.fields_by_name['userInfo'].message_type = _USERFORMDATA
+DESCRIPTOR.message_types_by_name['UserFormData'] = _USERFORMDATA
 DESCRIPTOR.message_types_by_name['RequestImage'] = _REQUESTIMAGE
-DESCRIPTOR.message_types_by_name['UserRegister'] = _USERREGISTER
-DESCRIPTOR.message_types_by_name['UserAuthenticate'] = _USERAUTHENTICATE
 DESCRIPTOR.message_types_by_name['MotionResponse'] = _MOTIONRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
+
+UserFormData = _reflection.GeneratedProtocolMessageType('UserFormData', (_message.Message,), {
+  'DESCRIPTOR' : _USERFORMDATA,
+  '__module__' : 'motion_pb2'
+  # @@protoc_insertion_point(class_scope:thesis.UserFormData)
+  })
+_sym_db.RegisterMessage(UserFormData)
 
 RequestImage = _reflection.GeneratedProtocolMessageType('RequestImage', (_message.Message,), {
   'DESCRIPTOR' : _REQUESTIMAGE,
@@ -180,20 +160,6 @@ RequestImage = _reflection.GeneratedProtocolMessageType('RequestImage', (_messag
   # @@protoc_insertion_point(class_scope:thesis.RequestImage)
   })
 _sym_db.RegisterMessage(RequestImage)
-
-UserRegister = _reflection.GeneratedProtocolMessageType('UserRegister', (_message.Message,), {
-  'DESCRIPTOR' : _USERREGISTER,
-  '__module__' : 'motion_pb2'
-  # @@protoc_insertion_point(class_scope:thesis.UserRegister)
-  })
-_sym_db.RegisterMessage(UserRegister)
-
-UserAuthenticate = _reflection.GeneratedProtocolMessageType('UserAuthenticate', (_message.Message,), {
-  'DESCRIPTOR' : _USERAUTHENTICATE,
-  '__module__' : 'motion_pb2'
-  # @@protoc_insertion_point(class_scope:thesis.UserAuthenticate)
-  })
-_sym_db.RegisterMessage(UserAuthenticate)
 
 MotionResponse = _reflection.GeneratedProtocolMessageType('MotionResponse', (_message.Message,), {
   'DESCRIPTOR' : _MOTIONRESPONSE,
@@ -211,26 +177,26 @@ _MOTION = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=246,
-  serialized_end=404,
+  serialized_start=214,
+  serialized_end=358,
   methods=[
   _descriptor.MethodDescriptor(
-    name='RegisterStreaming',
-    full_name='thesis.Motion.RegisterStreaming',
+    name='MotionStreaming',
+    full_name='thesis.Motion.MotionStreaming',
     index=0,
     containing_service=None,
-    input_type=_USERREGISTER,
+    input_type=_REQUESTIMAGE,
     output_type=_MOTIONRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
   _descriptor.MethodDescriptor(
-    name='AuthenticateStreaming',
-    full_name='thesis.Motion.AuthenticateStreaming',
+    name='RegisterFaceIndexes',
+    full_name='thesis.Motion.RegisterFaceIndexes',
     index=1,
     containing_service=None,
-    input_type=_USERAUTHENTICATE,
-    output_type=_MOTIONRESPONSE,
+    input_type=_USERFORMDATA,
+    output_type=_USERFORMDATA,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

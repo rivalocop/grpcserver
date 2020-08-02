@@ -1,38 +1,23 @@
 import io
-import json
 import logging
 import pickle
-import uuid
+from concurrent import futures
 
+import cv2
 import face_recognition
 import grpc
-import motion_pb2
-import motion_pb2_grpc
 import numpy as np
-import cv2
-import settings
 import tensorflow as tf
-
-from face_detector.face_detect import ImFace
-from concurrent import futures
+from pydantic.main import BaseModel
 from PIL import Image
 
+import motion_pb2
+import motion_pb2_grpc
+import settings
+from face_detector.face_detect import ImFace
 from motion_detector.motion_detect import ImMotion
 from repository.mongo_repository import MongoRepository
-from repository.singleton import faces
-
-gpus = tf.config.experimental.list_physical_devices('GPU')
-if gpus:
-    try:
-        # Currently, memory growth needs to be the same across GPUs
-        for gpu in gpus:
-            tf.config.experimental.set_memory_growth(gpu, True)
-        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
-        print(len(gpus), "Physical GPUs,", len(
-            logical_gpus), "Logical GPUs")
-    except RuntimeError as e:
-        # Memory growth must be set before GPUs have been initialized
-        print(e)
+from repository.singleton import faces, users
 
 print("[INFO] loading face detector...")
 net = cv2.dnn.readNetFromCaffe(settings.DEPLOY_FILE, settings.CAFFE_MODEL)
@@ -43,67 +28,75 @@ le = pickle.loads(open(settings.LABELS, "rb").read())
 face_indexes_repo = MongoRepository(faces)
 
 
-class MotionServicer(motion_pb2_grpc.MotionServicer):
-    def RegisterStreaming(self, request_iterator, context):
-        encodings = []
-        # Register face via streaming frame from camera
-        # Loop over stream
-        for ri in request_iterator:
-            with io.BytesIO(ri.frame.imagePayload) as f:
-                final_result = False
-                print(ri.frame.expectedLabel)
-                # Load it as numpy array
-                image = face_recognition.load_image_file(f)
-                # Check if image has face or not
-                box = face_recognition.face_locations(image)
-                if len(box) > 0:
-                    # Motion Detection
-                    extracted_face = ImFace(image, net).face
-                    motion = ImMotion(extracted_face, le,
-                                      model, ri.frame.expectedLabel)
-                    print(motion.result)
-                    if motion.result:
-                        # If motion detection passed then extract face encoding for register face indexes
-                        encoding = face_recognition.face_encodings(image, box)
-                        encodings.append(encoding[0].tolist())
-                        final_result = True
-                yield motion_pb2.MotionResponse(result=final_result)
-        if len(encodings) > 0:
-            print("[INFO] serializing encodings...")
-            user_id = str(uuid.uuid4())
-            data = {"encodings": encodings, "user_id": user_id}
-            face_indexes_repo.create(data)
+class User(BaseModel):
+    userId: str
+    isVerify: bool = False
 
-    def AuthenticateStreaming(self, request_iterator, context):
-        # Authenticate user via streaming frame from camera
-        # Loop over the stream
-        known_face_encoding = []
+
+def preprocess_image(image):
+    with io.BytesIO(image) as f:
+        # Load it as numpy array
+        image = np.array(Image.open(f))
+        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+        image = cv2.resize(image, (300, 300))
+        return image
+
+
+def predict_process(image, expected_label):
+    result = {
+        'result': False,
+        'encoding': None
+    }
+    with io.BytesIO(image) as f:
+        # Load it as numpy array
+        image = face_recognition.load_image_file(f)
+        # Check if image has face or not
+        box = face_recognition.face_locations(image)
+        if len(box) > 0:
+            # Motion Detection
+            extracted_face = ImFace(image, net).face
+            motion = ImMotion(extracted_face, le,
+                              model, expected_label)
+            if motion.result:
+                # If motion detection passed then extract face encoding for register face indexes
+                encoding = face_recognition.face_encodings(image, box)
+                result['result'] = True
+                result['encoding'] = encoding[0]
+        return result
+
+
+class MotionServicer(motion_pb2_grpc.MotionServicer):
+    def MotionStreaming(self, request_iterator, context):
+        is_registration_process = False
+        face_embeddings = []
+        result = False
         for ri in request_iterator:
-            if len(known_face_encoding) == 0:
-                known_face_encoding = face_indexes_repo.get(ri.userId)
-                known_face_encoding = np.array(
-                    known_face_encoding["encodings"])
-            # Open data frame and assign to bytes buffer
-            with io.BytesIO(ri.frame.imagePayload) as f:
-                final_result = False
-                # Load it via face_recognition
-                image = face_recognition.load_image_file(f)
-                # Check if image has face or not
-                box = face_recognition.face_locations(image)
-                if len(box) > 0:
-                    # Motion detection
+            if ri.userInfo is None:
+                is_registration_process = True
+
+            # Check face is existed:
+            image = preprocess_image(ri.imagePayload)
+            box = face_recognition.face_locations(image)
+            if len(box) > 0:
+                # Handle Registration
+                if is_registration_process:
                     extracted_face = ImFace(image, net).face
                     motion = ImMotion(extracted_face, le,
-                                      model, ri.frame.expectedLabel)
-                    if motion.result:
-                        # If motion detection passed then extract face encoding
+                                      model)
+                    if result['label'] == ri.expectedLabel and result['confidence'] > 0.5:
                         encoding = face_recognition.face_encodings(image, box)
-                        # Compare it to index stored in mongodb
-                        match_results = face_recognition.compare_faces(
-                            known_face_encoding, encoding[0])
-                        if match_results:
-                            final_result = True
-                yield motion_pb2.MotionResponse(result=final_result)
+                        face_embeddings.append(encoding[0].tolist())
+                        pass
+                    pass
+                # Handle Authentication
+                else:
+                    pass
+            yield motion_pb2.MotionResponse(result=result)
+
+    def RegisterFaceIndexes(self, request, context):
+        registered_user = User(userId=request.userId)
+        face_indexes_repo.create(registered_user.dict())
+        return motion_pb2.UserFormData(userId=registered_user.userId, isFaceVerify=registered_user.isVerify)
 
 
 def serve():
@@ -118,4 +111,3 @@ if __name__ == "__main__":
     logging.basicConfig()
     print("[INFO] Starting server...")
     serve()
-    print("[INFO] Server Started!")
