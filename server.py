@@ -42,69 +42,9 @@ def preprocess_image(image):
         return image
 
 
-def predict_process(image, expected_label):
-    result = {
-        'result': False,
-        'encoding': None
-    }
-    with io.BytesIO(image) as f:
-        # Load it as numpy array
-        image = face_recognition.load_image_file(f)
-        # Check if image has face or not
-        box = face_recognition.face_locations(image)
-        if len(box) > 0:
-            # Motion Detection
-            extracted_face = ImFace(image, net).face
-            motion = ImMotion(extracted_face, le,
-                              model, expected_label)
-            if motion.result:
-                # If motion detection passed then extract face encoding for register face indexes
-                encoding = face_recognition.face_encodings(image, box)
-                result['result'] = True
-                result['encoding'] = encoding[0]
-        return result
-
-
 def get_face_indexes(user_id):
-    face_indexes = faces.find_one({'user_id': user_id})
+    face_indexes = faces.find_one({'userId': user_id})
     return face_indexes['encodings']
-
-
-class User(BaseModel):
-    userId: str
-    isVerify: bool = False
-
-
-def preprocess_image(image):
-    with io.BytesIO(image) as f:
-        # Load it as numpy array
-        image = np.array(Image.open(f))
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-        image = cv2.resize(image, (300, 300))
-        return image
-
-
-def predict_process(image, expected_label):
-    result = {
-        'result': False,
-        'encoding': None
-    }
-    with io.BytesIO(image) as f:
-        # Load it as numpy array
-        image = face_recognition.load_image_file(f)
-        # Check if image has face or not
-        box = face_recognition.face_locations(image)
-        if len(box) > 0:
-            # Motion Detection
-            extracted_face = ImFace(image, net).face
-            motion = ImMotion(extracted_face, le,
-                              model, expected_label)
-            if motion.result:
-                # If motion detection passed then extract face encoding for register face indexes
-                encoding = face_recognition.face_encodings(image, box)
-                result['result'] = True
-                result['encoding'] = encoding[0]
-        return result
 
 
 class MotionServicer(motion_pb2_grpc.MotionServicer):
@@ -113,7 +53,7 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
         result = False
         user_id = None
         for ri in request_iterator:
-            if not face_embeddings:
+            if len(face_embeddings) == 0:
                 face_embeddings = np.array(
                     get_face_indexes(ri.userInfo.userId))
                 user_id = ri.userInfo.userId
@@ -125,6 +65,7 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
                 extracted_face = ImFace(image, net).face
                 motion = ImMotion(extracted_face, le,
                                   model)
+                print(motion.result)
                 if motion.result['label'] == ri.expectedLabel and motion.result['confidence'] > 0.5:
                     encoding = face_recognition.face_encodings(image, box)
                     compare_result = face_recognition.compare_faces(
@@ -140,7 +81,7 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
 
     def RegisterFaceIndexes(self, request, context):
         registered_user = User(userId=request.userId)
-        faces.create(registered_user.dict())
+        faces.insert_one(registered_user.dict())
         return motion_pb2.UserFormData(userId=registered_user.userId, isFaceVerify=registered_user.isVerify)
 
 
