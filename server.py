@@ -43,8 +43,11 @@ def preprocess_image(image):
 
 
 def get_face_indexes(user_id):
+    face_embeddings = []
     face_indexes = faces.find_one({'userId': user_id})
-    return face_indexes['encodings']
+    if len(face_indexes['encodings']) != 0:
+        return face_indexes['encodings']
+    return face_embeddings
 
 
 class MotionServicer(motion_pb2_grpc.MotionServicer):
@@ -54,8 +57,7 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
         user_id = None
         for ri in request_iterator:
             if len(face_embeddings) == 0:
-                face_embeddings = np.array(
-                    get_face_indexes(ri.userInfo.userId))
+                face_embeddings = get_face_indexes(ri.userInfo.userId)
                 user_id = ri.userInfo.userId
             # Check face is existed:
             image = preprocess_image(ri.imagePayload)
@@ -66,15 +68,19 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
                 motion = ImMotion(extracted_face, le,
                                   model)
                 print(motion.result)
-                if motion.result['label'] == ri.expectedLabel and motion.result['confidence'] > 0.5:
+                if motion.result['label'] == ri.expectedLabel and motion.result['confidence'] > 0.6:
                     encoding = face_recognition.face_encodings(image, box)
-                    compare_result = face_recognition.compare_faces(
-                        face_embeddings, encoding[0])
-                    if any(compare_result):
+                    if len(face_embeddings) == 0:
                         face_embeddings.append(encoding[0])
                         result = True
+                    else:
+                        compare_result = face_recognition.compare_faces(
+                            face_embeddings, encoding[0])
+                        if any(compare_result):
+                            face_embeddings.append(encoding[0])
+                            result = True
             yield motion_pb2.MotionResponse(result=result)
-        if len(face_embeddings) > 0:
+        if len(face_embeddings) == 3:
             encodings = map(lambda x: x.tolist(), face_embeddings)
             faces.update_one({'user_id': user_id}, {
                              '$set': {'encodings': encodings}})
@@ -86,7 +92,7 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
 
 
 def serve():
-    server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
+    server = grpc.server(futures.ThreadPoolExecutor(max_workers=4))
     motion_pb2_grpc.add_MotionServicer_to_server(MotionServicer(), server)
     server.add_insecure_port('[::]:50051')
     server.start()
