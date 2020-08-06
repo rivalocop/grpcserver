@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\"4\n\x0cUserFormData\x12\x0e\n\x06userId\x18\x01 \x01(\t\x12\x14\n\x0cisFaceVerify\x18\x02 \x01(\x08\"c\n\x0cRequestImage\x12\x15\n\rexpectedLabel\x18\x01 \x01(\t\x12\x14\n\x0cimagePayload\x18\x02 \x01(\x0c\x12&\n\x08userInfo\x18\x03 \x01(\x0b\x32\x14.thesis.UserFormData\" \n\x0eMotionResponse\x12\x0e\n\x06result\x18\x01 \x01(\x08\x32\x90\x01\n\x06Motion\x12\x43\n\x0fMotionStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12\x41\n\x13RegisterFaceIndexes\x12\x14.thesis.UserFormData\x1a\x14.thesis.UserFormDatab\x06proto3'
+  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\"4\n\x0cUserFormData\x12\x0e\n\x06userId\x18\x01 \x01(\t\x12\x14\n\x0cisFaceVerify\x18\x02 \x01(\x08\"$\n\x0cRequestImage\x12\x14\n\x0cimagePayload\x18\x02 \x01(\x0c\"?\n\x0eMotionResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\r\n\x05label\x18\x02 \x01(\t\x12\x12\n\nconfidence\x18\x03 \x01(\x01\x32\x90\x01\n\x06Motion\x12\x43\n\x0fMotionStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12\x41\n\x13RegisterFaceIndexes\x12\x14.thesis.UserFormData\x1a\x14.thesis.UserFormDatab\x06proto3'
 )
 
 
@@ -73,23 +73,9 @@ _REQUESTIMAGE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='expectedLabel', full_name='thesis.RequestImage.expectedLabel', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='imagePayload', full_name='thesis.RequestImage.imagePayload', index=1,
+      name='imagePayload', full_name='thesis.RequestImage.imagePayload', index=0,
       number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='userInfo', full_name='thesis.RequestImage.userInfo', index=2,
-      number=3, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -106,7 +92,7 @@ _REQUESTIMAGE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=78,
-  serialized_end=177,
+  serialized_end=114,
 )
 
 
@@ -119,9 +105,23 @@ _MOTIONRESPONSE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='result', full_name='thesis.MotionResponse.result', index=0,
-      number=1, type=8, cpp_type=7, label=1,
-      has_default_value=False, default_value=False,
+      name='id', full_name='thesis.MotionResponse.id', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='label', full_name='thesis.MotionResponse.label', index=1,
+      number=2, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='confidence', full_name='thesis.MotionResponse.confidence', index=2,
+      number=3, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
@@ -137,11 +137,10 @@ _MOTIONRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=179,
-  serialized_end=211,
+  serialized_start=116,
+  serialized_end=179,
 )
 
-_REQUESTIMAGE.fields_by_name['userInfo'].message_type = _USERFORMDATA
 DESCRIPTOR.message_types_by_name['UserFormData'] = _USERFORMDATA
 DESCRIPTOR.message_types_by_name['RequestImage'] = _REQUESTIMAGE
 DESCRIPTOR.message_types_by_name['MotionResponse'] = _MOTIONRESPONSE
@@ -177,8 +176,8 @@ _MOTION = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=214,
-  serialized_end=358,
+  serialized_start=182,
+  serialized_end=326,
   methods=[
   _descriptor.MethodDescriptor(
     name='MotionStreaming',

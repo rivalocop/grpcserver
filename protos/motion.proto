@@ -14,11 +14,11 @@ message UserFormData {
 }
 
 message RequestImage {
-    string expectedLabel = 1;
     bytes imagePayload = 2;
-    UserFormData userInfo = 3;
 }
 
 message MotionResponse{
-    bool result = 1;
+    string id = 1;
+    string label = 2;
+    double confidence = 3;
 }

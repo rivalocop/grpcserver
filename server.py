@@ -2,7 +2,7 @@ import io
 import logging
 import pickle
 from concurrent import futures
-from typing import List
+from typing import List, Optional
 
 import cv2
 import face_recognition
@@ -17,7 +17,7 @@ import motion_pb2_grpc
 import settings
 from face_detector.face_detect import ImFace
 from motion_detector.motion_detect import ImMotion
-from repository.singleton import faces
+from repository.singleton import faces, users
 
 print("[INFO] loading face detector...")
 net = cv2.dnn.readNetFromCaffe(settings.DEPLOY_FILE, settings.CAFFE_MODEL)
@@ -27,10 +27,15 @@ model = tf.keras.models.load_model(settings.MOTION)
 le = pickle.loads(open(settings.LABELS, "rb").read())
 
 
+class FaceIndexes(BaseModel):
+    userId: Optional[str] = None
+    confidence: float
+    label: str
+    encoding: List[float]
+
+
 class User(BaseModel):
     userId: str
-    isVerify: bool = False
-    encodings: List[float] = []
 
 
 def preprocess_image(image):
@@ -50,45 +55,36 @@ def get_face_indexes(user_id):
     return face_embeddings
 
 
+def predict_process(image):
+    extracted_face = ImFace(image, net).face
+    motion = ImMotion(extracted_face, le,
+                      model)
+    encodings = face_recognition.face_encodings(image)
+    new_embedding = FaceIndexes(
+        confidence=motion.result['confidence'],
+        label=motion.result['label'],
+        encoding=encodings[0].tolist())
+    return new_embedding
+
+
 class MotionServicer(motion_pb2_grpc.MotionServicer):
     def MotionStreaming(self, request_iterator, context):
-        face_embeddings = []
-        result = False
-        user_id = None
         for ri in request_iterator:
-            if len(face_embeddings) == 0:
-                face_embeddings = get_face_indexes(ri.userInfo.userId)
-                user_id = ri.userInfo.userId
-            # Check face is existed:
             image = preprocess_image(ri.imagePayload)
             box = face_recognition.face_locations(image)
+            print(len(box))
             if len(box) > 0:
-                # Handle Registration
-                extracted_face = ImFace(image, net).face
-                motion = ImMotion(extracted_face, le,
-                                  model)
-                print(motion.result)
-                if motion.result['label'] == ri.expectedLabel and motion.result['confidence'] > 0.6:
-                    encoding = face_recognition.face_encodings(image, box)
-                    if len(face_embeddings) == 0:
-                        face_embeddings.append(encoding[0])
-                        result = True
-                    else:
-                        compare_result = face_recognition.compare_faces(
-                            face_embeddings, encoding[0])
-                        if any(compare_result):
-                            face_embeddings.append(encoding[0])
-                            result = True
-            yield motion_pb2.MotionResponse(result=result)
-        if len(face_embeddings) == 3:
-            encodings = map(lambda x: x.tolist(), face_embeddings)
-            faces.update_one({'user_id': user_id}, {
-                             '$set': {'encodings': encodings}})
+                result = predict_process(image)
+                print(result.label)
+                encoding_id = faces.insert_one(result.dict()).inserted_id
+                yield motion_pb2.MotionResponse(label=result.label, confidence=result.confidence, id=str(encoding_id))
+            else:
+                yield motion_pb2.MotionResponse(label='None', confidence=0.0, id='None')
 
     def RegisterFaceIndexes(self, request, context):
         registered_user = User(userId=request.userId)
-        faces.insert_one(registered_user.dict())
-        return motion_pb2.UserFormData(userId=registered_user.userId, isFaceVerify=registered_user.isVerify)
+        users.insert_one(registered_user.dict())
+        return motion_pb2.UserFormData(userId=registered_user.userId)
 
 
 def serve():
