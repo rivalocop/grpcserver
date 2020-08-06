@@ -86,18 +86,22 @@ def predict_process(image, location):
 class MotionServicer(motion_pb2_grpc.MotionServicer):
     def MotionStreaming(self, request_iterator, context):
         for ri in request_iterator:
-            image = preprocess_image(ri.imagePayload)
-            box = face_recognition.face_locations(image, model='hog')
-            if len(box) > 0:
-                result = predict_process(image, box)
-                print(result.confidence)
-                print(result.label)
-                print(ri.expectedLabel)
-                if result.label == ri.expectedLabel and result.confidence > 0.5:
-                    encoding_id = faces.insert_one(result.dict()).inserted_id
-                    yield motion_pb2.MotionResponse(result=True, confidence=result.confidence, id=str(encoding_id))
-                else:
-                    yield motion_pb2.MotionResponse(result=False, confidence=0.0, id='None')
+            if ri.isPingMsg:
+                print("Pinged")
+                yield motion_pb2.MotionResponse(isPongMsg=True)
+            else:
+                image = preprocess_image(ri.imagePayload)
+                box = face_recognition.face_locations(image, model='hog')
+                if len(box) > 0:
+                    result = predict_process(image, box)
+                    print(result.confidence)
+                    print(f"predict {ri.expectedLabel} got {result.label}")
+                    if result.label == ri.expectedLabel and result.confidence > 0.5:
+                        encoding_id = faces.insert_one(
+                            result.dict()).inserted_id
+                        yield motion_pb2.MotionResponse(result=True, confidence=result.confidence, id=str(encoding_id))
+                    else:
+                        yield motion_pb2.MotionResponse(result=False, confidence=0.0, id='None')
 
     def RegisterFaceIndexes(self, request, context):
         registered_user = User(userId=request.userId)

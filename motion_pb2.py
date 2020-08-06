@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\"4\n\x0cUserFormData\x12\x0e\n\x06userId\x18\x01 \x01(\t\x12\x14\n\x0cisFaceVerify\x18\x02 \x01(\x08\";\n\x0cRequestImage\x12\x15\n\rexpectedLabel\x18\x01 \x01(\t\x12\x14\n\x0cimagePayload\x18\x02 \x01(\x0c\"@\n\x0eMotionResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\x08\x12\x12\n\nconfidence\x18\x03 \x01(\x01\x32\x90\x01\n\x06Motion\x12\x43\n\x0fMotionStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12\x41\n\x13RegisterFaceIndexes\x12\x14.thesis.UserFormData\x1a\x14.thesis.UserFormDatab\x06proto3'
+  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\"4\n\x0cUserFormData\x12\x0e\n\x06userId\x18\x01 \x01(\t\x12\x14\n\x0cisFaceVerify\x18\x02 \x01(\x08\"N\n\x0cRequestImage\x12\x15\n\rexpectedLabel\x18\x01 \x01(\t\x12\x14\n\x0cimagePayload\x18\x02 \x01(\x0c\x12\x11\n\tisPingMsg\x18\x03 \x01(\x08\"S\n\x0eMotionResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\x08\x12\x12\n\nconfidence\x18\x03 \x01(\x01\x12\x11\n\tisPongMsg\x18\x04 \x01(\x08\x32\x90\x01\n\x06Motion\x12\x43\n\x0fMotionStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12\x41\n\x13RegisterFaceIndexes\x12\x14.thesis.UserFormData\x1a\x14.thesis.UserFormDatab\x06proto3'
 )
 
 
@@ -86,6 +86,13 @@ _REQUESTIMAGE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='isPingMsg', full_name='thesis.RequestImage.isPingMsg', index=2,
+      number=3, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -99,7 +106,7 @@ _REQUESTIMAGE = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=78,
-  serialized_end=137,
+  serialized_end=156,
 )
 
 
@@ -132,6 +139,13 @@ _MOTIONRESPONSE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='isPongMsg', full_name='thesis.MotionResponse.isPongMsg', index=3,
+      number=4, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -144,8 +158,8 @@ _MOTIONRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=139,
-  serialized_end=203,
+  serialized_start=158,
+  serialized_end=241,
 )
 
 DESCRIPTOR.message_types_by_name['UserFormData'] = _USERFORMDATA
@@ -183,8 +197,8 @@ _MOTION = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=206,
-  serialized_end=350,
+  serialized_start=244,
+  serialized_end=388,
   methods=[
   _descriptor.MethodDescriptor(
     name='MotionStreaming',

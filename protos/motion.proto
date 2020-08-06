@@ -16,10 +16,12 @@ message UserFormData {
 message RequestImage {
     string expectedLabel = 1;
     bytes imagePayload = 2;
+    bool isPingMsg = 3;
 }
 
 message MotionResponse{
     string id = 1;
     bool result = 2;
     double confidence = 3;
+    bool isPongMsg = 4;
 }
