@@ -19,10 +19,88 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\"4\n\x0cUserFormData\x12\x0e\n\x06userId\x18\x01 \x01(\t\x12\x14\n\x0cisFaceVerify\x18\x02 \x01(\x08\"N\n\x0cRequestImage\x12\x15\n\rexpectedLabel\x18\x01 \x01(\t\x12\x14\n\x0cimagePayload\x18\x02 \x01(\x0c\x12\x11\n\tisPingMsg\x18\x03 \x01(\x08\"S\n\x0eMotionResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\x08\x12\x12\n\nconfidence\x18\x03 \x01(\x01\x12\x11\n\tisPongMsg\x18\x04 \x01(\x08\x32\x90\x01\n\x06Motion\x12\x43\n\x0fMotionStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12\x41\n\x13RegisterFaceIndexes\x12\x14.thesis.UserFormData\x1a\x14.thesis.UserFormDatab\x06proto3'
+  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\"L\n\x12\x46\x61\x63\x65IndexesConfirm\x12%\n\x07userInf\x18\x01 \x01(\x0b\x32\x14.thesis.UserFormData\x12\x0f\n\x07imageId\x18\x02 \x03(\t\"<\n\x13\x46\x61\x63\x65IndexesResponse\x12\x12\n\nactivityId\x18\x01 \x01(\t\x12\x11\n\tisSuccess\x18\x02 \x01(\x08\"4\n\x0cUserFormData\x12\x0e\n\x06userId\x18\x01 \x01(\t\x12\x14\n\x0cisFaceVerify\x18\x02 \x01(\x08\"N\n\x0cRequestImage\x12\x15\n\rexpectedLabel\x18\x01 \x01(\t\x12\x14\n\x0cimagePayload\x18\x02 \x01(\x0c\x12\x11\n\tisPingMsg\x18\x03 \x01(\x08\"S\n\x0eMotionResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\x08\x12\x12\n\nconfidence\x18\x03 \x01(\x01\x12\x11\n\tisPongMsg\x18\x04 \x01(\x08\x32\xde\x01\n\x06Motion\x12\x43\n\x0fMotionStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12\x41\n\x13RegisterFaceIndexes\x12\x14.thesis.UserFormData\x1a\x14.thesis.UserFormData\x12L\n\x11UpdateFaceIndexes\x12\x1a.thesis.FaceIndexesConfirm\x1a\x1b.thesis.FaceIndexesResponseb\x06proto3'
 )
 
 
+
+
+_FACEINDEXESCONFIRM = _descriptor.Descriptor(
+  name='FaceIndexesConfirm',
+  full_name='thesis.FaceIndexesConfirm',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='userInf', full_name='thesis.FaceIndexesConfirm.userInf', index=0,
+      number=1, type=11, cpp_type=10, label=1,
+      has_default_value=False, default_value=None,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='imageId', full_name='thesis.FaceIndexesConfirm.imageId', index=1,
+      number=2, type=9, cpp_type=9, label=3,
+      has_default_value=False, default_value=[],
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=24,
+  serialized_end=100,
+)
+
+
+_FACEINDEXESRESPONSE = _descriptor.Descriptor(
+  name='FaceIndexesResponse',
+  full_name='thesis.FaceIndexesResponse',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='activityId', full_name='thesis.FaceIndexesResponse.activityId', index=0,
+      number=1, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='isSuccess', full_name='thesis.FaceIndexesResponse.isSuccess', index=1,
+      number=2, type=8, cpp_type=7, label=1,
+      has_default_value=False, default_value=False,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto3',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=102,
+  serialized_end=162,
+)
 
 
 _USERFORMDATA = _descriptor.Descriptor(
@@ -59,8 +137,8 @@ _USERFORMDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=24,
-  serialized_end=76,
+  serialized_start=164,
+  serialized_end=216,
 )
 
 
@@ -105,8 +183,8 @@ _REQUESTIMAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=78,
-  serialized_end=156,
+  serialized_start=218,
+  serialized_end=296,
 )
 
 
@@ -158,14 +236,31 @@ _MOTIONRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=158,
-  serialized_end=241,
+  serialized_start=298,
+  serialized_end=381,
 )
 
+_FACEINDEXESCONFIRM.fields_by_name['userInf'].message_type = _USERFORMDATA
+DESCRIPTOR.message_types_by_name['FaceIndexesConfirm'] = _FACEINDEXESCONFIRM
+DESCRIPTOR.message_types_by_name['FaceIndexesResponse'] = _FACEINDEXESRESPONSE
 DESCRIPTOR.message_types_by_name['UserFormData'] = _USERFORMDATA
 DESCRIPTOR.message_types_by_name['RequestImage'] = _REQUESTIMAGE
 DESCRIPTOR.message_types_by_name['MotionResponse'] = _MOTIONRESPONSE
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)
+
+FaceIndexesConfirm = _reflection.GeneratedProtocolMessageType('FaceIndexesConfirm', (_message.Message,), {
+  'DESCRIPTOR' : _FACEINDEXESCONFIRM,
+  '__module__' : 'motion_pb2'
+  # @@protoc_insertion_point(class_scope:thesis.FaceIndexesConfirm)
+  })
+_sym_db.RegisterMessage(FaceIndexesConfirm)
+
+FaceIndexesResponse = _reflection.GeneratedProtocolMessageType('FaceIndexesResponse', (_message.Message,), {
+  'DESCRIPTOR' : _FACEINDEXESRESPONSE,
+  '__module__' : 'motion_pb2'
+  # @@protoc_insertion_point(class_scope:thesis.FaceIndexesResponse)
+  })
+_sym_db.RegisterMessage(FaceIndexesResponse)
 
 UserFormData = _reflection.GeneratedProtocolMessageType('UserFormData', (_message.Message,), {
   'DESCRIPTOR' : _USERFORMDATA,
@@ -197,8 +292,8 @@ _MOTION = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=244,
-  serialized_end=388,
+  serialized_start=384,
+  serialized_end=606,
   methods=[
   _descriptor.MethodDescriptor(
     name='MotionStreaming',
@@ -217,6 +312,16 @@ _MOTION = _descriptor.ServiceDescriptor(
     containing_service=None,
     input_type=_USERFORMDATA,
     output_type=_USERFORMDATA,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='UpdateFaceIndexes',
+    full_name='thesis.Motion.UpdateFaceIndexes',
+    index=2,
+    containing_service=None,
+    input_type=_FACEINDEXESCONFIRM,
+    output_type=_FACEINDEXESRESPONSE,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),

@@ -1,7 +1,7 @@
-import io
 import logging
 import pickle
 from concurrent import futures
+from datetime import datetime
 from typing import List, Optional
 
 import cv2
@@ -9,7 +9,7 @@ import face_recognition
 import grpc
 import numpy as np
 import tensorflow as tf
-from PIL import Image
+from bson.objectid import ObjectId
 from pydantic.main import BaseModel
 
 import motion_pb2
@@ -17,7 +17,7 @@ import motion_pb2_grpc
 import settings
 from face_detector.face_detect import ImFace
 from motion_detector.motion_detect import ImMotion
-from repository.singleton import faces, users
+from repository.singleton import faces, users, activities
 
 gpus = tf.config.experimental.list_physical_devices('GPU')
 if gpus:
@@ -51,13 +51,20 @@ class User(BaseModel):
     userId: str
 
 
+class RecentActivity(BaseModel):
+    isSuccess: bool = False
+    title: str
+    content: str
+    causeId: str
+    createdTime: datetime
+
+
 def preprocess_image(image):
-    with io.BytesIO(image) as f:
-        # Load it as numpy array
-        image = np.array(Image.open(f))
-        image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-        image = cv2.resize(image, (300, 300))
-        return image
+    img = np.frombuffer(image, np.uint8).reshape(352, 288, 4)
+    img = cv2.cvtColor(img, cv2.COLOR_BGRA2BGR)
+    img = cv2.resize(img, (300, 300))
+    img = cv2.flip(img, 1)
+    return img
 
 
 def get_face_indexes(user_id):
@@ -79,8 +86,8 @@ def predict_process(image, location):
             label=motion.result['label'],
             encoding=encodings[0].tolist())
         return new_embedding
-    except Exception as e:
-        print(e)
+    except Exception as err:
+        print(err)
 
 
 class MotionServicer(motion_pb2_grpc.MotionServicer):
@@ -91,10 +98,9 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
                 yield motion_pb2.MotionResponse(isPongMsg=True)
             else:
                 image = preprocess_image(ri.imagePayload)
-                box = face_recognition.face_locations(image, model='hog')
+                box = face_recognition.face_locations(image, model='cnn')
                 if len(box) > 0:
                     result = predict_process(image, box)
-                    print(result.confidence)
                     print(f"predict {ri.expectedLabel} got {result.label}")
                     if result.label == ri.expectedLabel and result.confidence > 0.5:
                         encoding_id = faces.insert_one(
@@ -107,6 +113,24 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
         registered_user = User(userId=request.userId)
         users.insert_one(registered_user.dict())
         return motion_pb2.UserFormData(userId=registered_user.userId)
+
+    def UpdateFaceIndexes(self, request, context):
+        try:
+            for i in request.imageId:
+                faces.update_one({'_id': ObjectId(i)}, {'$set': {'userId': request.userInf.userId}})
+
+            new_activity = RecentActivity(
+                isSuccess=True,
+                title='Update face indexes',
+                content='Update face indexes from main account',
+                causeId=request.userInf.userId,
+                createdTime=datetime.now()
+            )
+            activity_id = activities.insert_one(new_activity.dict()).inserted_id
+            return motion_pb2.FaceIndexesResponse(isSuccess=new_activity.isSuccess, activityId=activity_id)
+        except Exception as err:
+            print(err)
+            return motion_pb2.FaceIndexesResponse(isSuccess=False)
 
 
 def serve():
