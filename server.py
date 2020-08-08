@@ -2,6 +2,7 @@ import logging
 import pickle
 from concurrent import futures
 from datetime import datetime
+from time import time
 from typing import List, Optional
 
 import cv2
@@ -18,14 +19,15 @@ import settings
 from face_detector.face_detect import ImFace
 from motion_detector.motion_detect import ImMotion
 from repository.singleton import faces, users, activities
+import time
 
-gpus = tf.config.experimental.list_physical_devices('GPU')
+gpus = tf.config.list_physical_devices('GPU')
 if gpus:
     try:
         # Currently, memory growth needs to be the same across GPUs
         for gpu in gpus:
-            tf.config.experimental.set_memory_growth(gpu, True)
-        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+            tf.config.set_memory_growth(gpu, True)
+        logical_gpus = tf.config.list_logical_devices('GPU')
         print(len(gpus), "Physical GPUs,", len(
             logical_gpus), "Logical GPUs")
     except RuntimeError as e:
@@ -68,11 +70,8 @@ def preprocess_image(image):
 
 
 def get_face_indexes(user_id):
-    face_embeddings = []
-    face_indexes = faces.find_one({'userId': user_id})
-    if len(face_indexes['encodings']) != 0:
-        return face_indexes['encodings']
-    return face_embeddings
+    face_indexes = faces.find({'userId': user_id})
+    return [doc["encoding"] for doc in face_indexes]
 
 
 def predict_process(image, location):
@@ -97,17 +96,26 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
                 print("Pinged")
                 yield motion_pb2.MotionResponse(isPongMsg=True)
             else:
-                image = preprocess_image(ri.imagePayload)
-                box = face_recognition.face_locations(image, model='cnn')
-                if len(box) > 0:
-                    result = predict_process(image, box)
-                    print(f"predict {ri.expectedLabel} got {result.label}")
-                    if result.label == ri.expectedLabel and result.confidence > 0.5:
-                        encoding_id = faces.insert_one(
-                            result.dict()).inserted_id
-                        yield motion_pb2.MotionResponse(result=True, confidence=result.confidence, id=str(encoding_id))
-                    else:
-                        yield motion_pb2.MotionResponse(result=False, confidence=0.0, id='None')
+                returned_model = motion_pb2.MotionResponse(
+                    result=False, confidence=0.0, id='None')
+                try:
+                    image = preprocess_image(ri.imagePayload)
+                    box = face_recognition.face_locations(image)
+                    if len(box) > 0:
+                        result = predict_process(image, box)
+                        print(
+                            f"predict {ri.expectedLabel} got {result.label} with confidence: {result.confidence}")
+                        if result.label == ri.expectedLabel and result.confidence > 0.5:
+                            encoding_id = faces.insert_one(
+                                result.dict()).inserted_id
+                            returned_model = motion_pb2.MotionResponse(
+                                result=True, confidence=result.confidence, id=str(encoding_id))
+                except Exception as e:
+                    print(e)
+                finally:
+                    time.sleep(0.5)
+                    print('predicted')
+                    yield returned_model
 
     def RegisterFaceIndexes(self, request, context):
         registered_user = User(userId=request.userId)
@@ -115,22 +123,56 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
         return motion_pb2.UserFormData(userId=registered_user.userId)
 
     def UpdateFaceIndexes(self, request, context):
+        returned_model = motion_pb2.FaceIndexesResponse(isSuccess=False)
         try:
-            for i in request.imageId:
-                faces.update_one({'_id': ObjectId(i)}, {'$set': {'userId': request.userInf.userId}})
+            if len(request.imageIds) > 0:
+                for i in request.imageIds:
+                    faces.update_one({'_id': ObjectId(i)}, {
+                                     '$set': {'userId': request.userInf.userId}})
 
-            new_activity = RecentActivity(
-                isSuccess=True,
-                title='Update face indexes',
-                content='Update face indexes from main account',
-                causeId=request.userInf.userId,
-                createdTime=datetime.now()
-            )
-            activity_id = activities.insert_one(new_activity.dict()).inserted_id
-            return motion_pb2.FaceIndexesResponse(isSuccess=new_activity.isSuccess, activityId=activity_id)
+                new_activity = RecentActivity(
+                    isSuccess=True,
+                    title='Update face indexes',
+                    content='Update face indexes from main account',
+                    causeId=request.userInf.userId,
+                    createdTime=datetime.now()
+                )
+                activity_id = activities.insert_one(
+                    new_activity.dict()).inserted_id
+                returned_model = motion_pb2.FaceIndexesResponse(
+                    isSuccess=new_activity.isSuccess, activityId=str(activity_id))
         except Exception as err:
             print(err)
-            return motion_pb2.FaceIndexesResponse(isSuccess=False)
+        finally:
+            return returned_model
+
+    def FaceRecognizeStreaming(self, request_iterator, context):
+        face_embedding = []
+        for ri in request_iterator:
+            if ri.isPingMsg:
+                print("Pinged")
+                face_embedding = get_face_indexes(ri.userInf.userId)
+                yield motion_pb2.MotionResponse(isPongMsg=True)
+            else:
+                returned_model = motion_pb2.MotionResponse(
+                    result=False, confidence=0.0, id='None')
+                try:
+                    image = preprocess_image(ri.imagePayload)
+                    box = face_recognition.face_locations(image)
+                    if len(box) > 0:
+                        result = predict_process(image, box)
+                        print(
+                            f"predict {ri.expectedLabel} got {result.label} with confidence: {result.confidence}")
+                        if result.label == ri.expectedLabel and result.confidence > 0.5:
+                            unknown_face_encoding = np.array(result.encoding)
+                            match_results = face_recognition.compare_faces(face_embedding, unknown_face_encoding)
+                            if match_results[0]:
+                                returned_model = motion_pb2.MotionResponse(
+                                    result=True)
+                except Exception as err:
+                    print(err)
+                finally:
+                    yield returned_model
 
 
 def serve():

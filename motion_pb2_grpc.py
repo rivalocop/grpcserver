@@ -29,6 +29,11 @@ class MotionStub(object):
                 request_serializer=motion__pb2.FaceIndexesConfirm.SerializeToString,
                 response_deserializer=motion__pb2.FaceIndexesResponse.FromString,
                 )
+        self.FaceRecognizeStreaming = channel.stream_stream(
+                '/thesis.Motion/FaceRecognizeStreaming',
+                request_serializer=motion__pb2.RequestImage.SerializeToString,
+                response_deserializer=motion__pb2.MotionResponse.FromString,
+                )
 
 
 class MotionServicer(object):
@@ -52,6 +57,12 @@ class MotionServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def FaceRecognizeStreaming(self, request_iterator, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MotionServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -69,6 +80,11 @@ def add_MotionServicer_to_server(servicer, server):
                     servicer.UpdateFaceIndexes,
                     request_deserializer=motion__pb2.FaceIndexesConfirm.FromString,
                     response_serializer=motion__pb2.FaceIndexesResponse.SerializeToString,
+            ),
+            'FaceRecognizeStreaming': grpc.stream_stream_rpc_method_handler(
+                    servicer.FaceRecognizeStreaming,
+                    request_deserializer=motion__pb2.RequestImage.FromString,
+                    response_serializer=motion__pb2.MotionResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -125,5 +141,21 @@ class Motion(object):
         return grpc.experimental.unary_unary(request, target, '/thesis.Motion/UpdateFaceIndexes',
             motion__pb2.FaceIndexesConfirm.SerializeToString,
             motion__pb2.FaceIndexesResponse.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def FaceRecognizeStreaming(request_iterator,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.stream_stream(request_iterator, target, '/thesis.Motion/FaceRecognizeStreaming',
+            motion__pb2.RequestImage.SerializeToString,
+            motion__pb2.MotionResponse.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)

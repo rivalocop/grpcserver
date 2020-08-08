@@ -6,11 +6,12 @@ service Motion{
     rpc MotionStreaming (stream RequestImage) returns (stream MotionResponse);
     rpc RegisterFaceIndexes (UserFormData) returns (UserFormData);
     rpc UpdateFaceIndexes (FaceIndexesConfirm) returns (FaceIndexesResponse);
+    rpc FaceRecognizeStreaming (stream RequestImage) returns (stream MotionResponse); 
 }
 
 message FaceIndexesConfirm{
     UserFormData userInf = 1;
-    repeated string imageId = 2;
+    repeated string imageIds = 2;
 }
 
 message FaceIndexesResponse{
