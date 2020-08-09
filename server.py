@@ -12,7 +12,7 @@ import grpc
 import numpy as np
 import tensorflow as tf
 from bson.objectid import ObjectId
-from pydantic.main import BaseModel
+from pydantic import BaseModel
 
 import motion_pb2
 import motion_pb2_grpc
@@ -122,7 +122,7 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
                     isSuccess=True,
                     title='Update face indexes',
                     content='Update face indexes from main account',
-                    causeId=request.userInf.userId,
+                    causeId=request.user_inf.user_id,
                     createdTime=datetime.now()
                 )
                 activity_id = activities.insert_one(
@@ -163,7 +163,6 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
                     yield returned_model
 
     def RequireFaceRecognizeRequest(self, request, context):
-        is_recognized = False
         new_activity = RecentActivity(
             isSuccess=False,
             title=request.titleRequest,
@@ -189,6 +188,31 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
         else:
             return motion_pb2.FaceRecognizeResponse(activity_id=str(activity_id),
                                                     result=motion_pb2.FaceRecognizeResponse.Result.RESULT_FAILURE)
+
+    def GetActivityRecentList(self, request, context):
+        list_activities = activities.find({'causeId': request.user_id}) \
+            .sort([('createdTime', -1)])
+        for a in list_activities:
+            yield motion_pb2.ActivityRecent(
+                is_success=a['isSuccess'],
+                title=a['title'],
+                content=a['content'],
+                cause_id=a['causeId'],
+                created_time=a['createdTime']
+            )
+
+    def UpdateActivityRecent(self, request, context):
+        stored_activity = activities.find_one({'causeId': request.cause_id, 'isSuccess': False})
+        stored_activity_model = RecentActivity(**stored_activity)
+        stored_activity_model.isSuccess = request.is_success
+        activities.
+        return motion_pb2.ActivityRecent(
+            is_success=request.is_success,
+            title=request.title,
+            content=request.content,
+            cause_id=request.causeId,
+            created_time=request.created_time
+        )
 
 
 def serve():

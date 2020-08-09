@@ -8,21 +8,20 @@ service Motion{
     rpc UpdateFaceIndexes (FaceIndexesConfirm) returns (FaceIndexesResponse);
     rpc FaceRecognizeStreaming (stream RequestImage) returns (stream MotionResponse);
     rpc RequireFaceRecognizeRequest (FaceRecognizeRequest) returns (FaceRecognizeResponse);
-    rpc GetActivityRecentList(ActivityRecentRequest) returns (stream ActivityRecentResponse);
+    rpc GetActivityRecentList(ActivityRecentRequest) returns (stream ActivityRecent);
+    rpc UpdateActivityRecent(ActivityRecent) returns (ActivityRecent);
 }
 
 message ActivityRecent{
     bool is_success = 1;
     string title = 2;
     string content = 3;
+    string cause_id = 4;
+    string created_time = 5;
 }
 
 message ActivityRecentRequest{
     string user_id = 1;
-}
-
-message ActivityRecentResponse{
-    ActivityRecent activity = 1;
 }
 
 message FaceRecognizeRequest{

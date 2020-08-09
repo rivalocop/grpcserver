@@ -42,7 +42,12 @@ class MotionStub(object):
         self.GetActivityRecentList = channel.unary_stream(
                 '/thesis.Motion/GetActivityRecentList',
                 request_serializer=motion__pb2.ActivityRecentRequest.SerializeToString,
-                response_deserializer=motion__pb2.ActivityRecentResponse.FromString,
+                response_deserializer=motion__pb2.ActivityRecent.FromString,
+                )
+        self.UpdateActivityRecent = channel.unary_unary(
+                '/thesis.Motion/UpdateActivityRecent',
+                request_serializer=motion__pb2.ActivityRecent.SerializeToString,
+                response_deserializer=motion__pb2.ActivityRecent.FromString,
                 )
 
 
@@ -85,6 +90,12 @@ class MotionServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def UpdateActivityRecent(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MotionServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -116,7 +127,12 @@ def add_MotionServicer_to_server(servicer, server):
             'GetActivityRecentList': grpc.unary_stream_rpc_method_handler(
                     servicer.GetActivityRecentList,
                     request_deserializer=motion__pb2.ActivityRecentRequest.FromString,
-                    response_serializer=motion__pb2.ActivityRecentResponse.SerializeToString,
+                    response_serializer=motion__pb2.ActivityRecent.SerializeToString,
+            ),
+            'UpdateActivityRecent': grpc.unary_unary_rpc_method_handler(
+                    servicer.UpdateActivityRecent,
+                    request_deserializer=motion__pb2.ActivityRecent.FromString,
+                    response_serializer=motion__pb2.ActivityRecent.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -220,6 +236,22 @@ class Motion(object):
             metadata=None):
         return grpc.experimental.unary_stream(request, target, '/thesis.Motion/GetActivityRecentList',
             motion__pb2.ActivityRecentRequest.SerializeToString,
-            motion__pb2.ActivityRecentResponse.FromString,
+            motion__pb2.ActivityRecent.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def UpdateActivityRecent(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/thesis.Motion/UpdateActivityRecent',
+            motion__pb2.ActivityRecent.SerializeToString,
+            motion__pb2.ActivityRecent.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)

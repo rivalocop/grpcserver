@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\"D\n\x0e\x41\x63tivityRecent\x12\x12\n\nis_success\x18\x01 \x01(\x08\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\"(\n\x15\x41\x63tivityRecentRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"B\n\x16\x41\x63tivityRecentResponse\x12(\n\x08\x61\x63tivity\x18\x01 \x01(\x0b\x32\x16.thesis.ActivityRecent\"U\n\x14\x46\x61\x63\x65RecognizeRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x14\n\x0ctitleRequest\x18\x02 \x01(\t\x12\x16\n\x0e\x63ontentRequest\x18\x03 \x01(\t\"\xa5\x01\n\x15\x46\x61\x63\x65RecognizeResponse\x12\x13\n\x0b\x61\x63tivity_id\x18\x01 \x01(\t\x12\x34\n\x06result\x18\x02 \x01(\x0e\x32$.thesis.FaceRecognizeResponse.Result\"A\n\x06Result\x12\x12\n\x0eRESULT_SUCCESS\x10\x00\x12\x12\n\x0eRESULT_FAILURE\x10\x01\x12\x0f\n\x0bRESULT_DENY\x10\x02\"O\n\x12\x46\x61\x63\x65IndexesConfirm\x12&\n\x08user_inf\x18\x01 \x01(\x0b\x32\x14.thesis.UserFormData\x12\x11\n\timage_ids\x18\x02 \x03(\t\">\n\x13\x46\x61\x63\x65IndexesResponse\x12\x13\n\x0b\x61\x63tivity_id\x18\x01 \x01(\t\x12\x12\n\nis_success\x18\x02 \x01(\x08\"7\n\x0cUserFormData\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x16\n\x0eis_face_verify\x18\x02 \x01(\x08\"R\n\x0cRequestImage\x12\x16\n\x0e\x65xpected_label\x18\x01 \x01(\t\x12\x15\n\rimage_payload\x18\x02 \x01(\x0c\x12\x13\n\x0bis_ping_msg\x18\x03 \x01(\x08\"U\n\x0eMotionResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\x08\x12\x12\n\nconfidence\x18\x03 \x01(\x01\x12\x13\n\x0bis_pong_msg\x18\x04 \x01(\x08\x32\xe0\x03\n\x06Motion\x12\x43\n\x0fMotionStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12\x41\n\x13RegisterFaceIndexes\x12\x14.thesis.UserFormData\x1a\x14.thesis.UserFormData\x12L\n\x11UpdateFaceIndexes\x12\x1a.thesis.FaceIndexesConfirm\x1a\x1b.thesis.FaceIndexesResponse\x12J\n\x16\x46\x61\x63\x65RecognizeStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12Z\n\x1bRequireFaceRecognizeRequest\x12\x1c.thesis.FaceRecognizeRequest\x1a\x1d.thesis.FaceRecognizeResponse\x12X\n\x15GetActivityRecentList\x12\x1d.thesis.ActivityRecentRequest\x1a\x1e.thesis.ActivityRecentResponse0\x01\x62\x06proto3'
+  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\"l\n\x0e\x41\x63tivityRecent\x12\x12\n\nis_success\x18\x01 \x01(\x08\x12\r\n\x05title\x18\x02 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x03 \x01(\t\x12\x10\n\x08\x63\x61use_id\x18\x04 \x01(\t\x12\x14\n\x0c\x63reated_time\x18\x05 \x01(\t\"(\n\x15\x41\x63tivityRecentRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"U\n\x14\x46\x61\x63\x65RecognizeRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x14\n\x0ctitleRequest\x18\x02 \x01(\t\x12\x16\n\x0e\x63ontentRequest\x18\x03 \x01(\t\"\xa5\x01\n\x15\x46\x61\x63\x65RecognizeResponse\x12\x13\n\x0b\x61\x63tivity_id\x18\x01 \x01(\t\x12\x34\n\x06result\x18\x02 \x01(\x0e\x32$.thesis.FaceRecognizeResponse.Result\"A\n\x06Result\x12\x12\n\x0eRESULT_SUCCESS\x10\x00\x12\x12\n\x0eRESULT_FAILURE\x10\x01\x12\x0f\n\x0bRESULT_DENY\x10\x02\"O\n\x12\x46\x61\x63\x65IndexesConfirm\x12&\n\x08user_inf\x18\x01 \x01(\x0b\x32\x14.thesis.UserFormData\x12\x11\n\timage_ids\x18\x02 \x03(\t\">\n\x13\x46\x61\x63\x65IndexesResponse\x12\x13\n\x0b\x61\x63tivity_id\x18\x01 \x01(\t\x12\x12\n\nis_success\x18\x02 \x01(\x08\"7\n\x0cUserFormData\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x16\n\x0eis_face_verify\x18\x02 \x01(\x08\"R\n\x0cRequestImage\x12\x16\n\x0e\x65xpected_label\x18\x01 \x01(\t\x12\x15\n\rimage_payload\x18\x02 \x01(\x0c\x12\x13\n\x0bis_ping_msg\x18\x03 \x01(\x08\"U\n\x0eMotionResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\x08\x12\x12\n\nconfidence\x18\x03 \x01(\x01\x12\x13\n\x0bis_pong_msg\x18\x04 \x01(\x08\x32\xa0\x04\n\x06Motion\x12\x43\n\x0fMotionStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12\x41\n\x13RegisterFaceIndexes\x12\x14.thesis.UserFormData\x1a\x14.thesis.UserFormData\x12L\n\x11UpdateFaceIndexes\x12\x1a.thesis.FaceIndexesConfirm\x1a\x1b.thesis.FaceIndexesResponse\x12J\n\x16\x46\x61\x63\x65RecognizeStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12Z\n\x1bRequireFaceRecognizeRequest\x12\x1c.thesis.FaceRecognizeRequest\x1a\x1d.thesis.FaceRecognizeResponse\x12P\n\x15GetActivityRecentList\x12\x1d.thesis.ActivityRecentRequest\x1a\x16.thesis.ActivityRecent0\x01\x12\x46\n\x14UpdateActivityRecent\x12\x16.thesis.ActivityRecent\x1a\x16.thesis.ActivityRecentb\x06proto3'
 )
 
 
@@ -49,8 +49,8 @@ _FACERECOGNIZERESPONSE_RESULT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=392,
-  serialized_end=457,
+  serialized_start=364,
+  serialized_end=429,
 )
 _sym_db.RegisterEnumDescriptor(_FACERECOGNIZERESPONSE_RESULT)
 
@@ -84,6 +84,20 @@ _ACTIVITYRECENT = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='cause_id', full_name='thesis.ActivityRecent.cause_id', index=3,
+      number=4, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='created_time', full_name='thesis.ActivityRecent.created_time', index=4,
+      number=5, type=9, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"".decode('utf-8'),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
   ],
   extensions=[
   ],
@@ -97,7 +111,7 @@ _ACTIVITYRECENT = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=24,
-  serialized_end=92,
+  serialized_end=132,
 )
 
 
@@ -128,40 +142,8 @@ _ACTIVITYRECENTREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=94,
-  serialized_end=134,
-)
-
-
-_ACTIVITYRECENTRESPONSE = _descriptor.Descriptor(
-  name='ActivityRecentResponse',
-  full_name='thesis.ActivityRecentResponse',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='activity', full_name='thesis.ActivityRecentResponse.activity', index=0,
-      number=1, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto3',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=136,
-  serialized_end=202,
+  serialized_start=134,
+  serialized_end=174,
 )
 
 
@@ -206,8 +188,8 @@ _FACERECOGNIZEREQUEST = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=204,
-  serialized_end=289,
+  serialized_start=176,
+  serialized_end=261,
 )
 
 
@@ -246,8 +228,8 @@ _FACERECOGNIZERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=292,
-  serialized_end=457,
+  serialized_start=264,
+  serialized_end=429,
 )
 
 
@@ -285,8 +267,8 @@ _FACEINDEXESCONFIRM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=459,
-  serialized_end=538,
+  serialized_start=431,
+  serialized_end=510,
 )
 
 
@@ -324,8 +306,8 @@ _FACEINDEXESRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=540,
-  serialized_end=602,
+  serialized_start=512,
+  serialized_end=574,
 )
 
 
@@ -363,8 +345,8 @@ _USERFORMDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=604,
-  serialized_end=659,
+  serialized_start=576,
+  serialized_end=631,
 )
 
 
@@ -409,8 +391,8 @@ _REQUESTIMAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=661,
-  serialized_end=743,
+  serialized_start=633,
+  serialized_end=715,
 )
 
 
@@ -462,17 +444,15 @@ _MOTIONRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=745,
-  serialized_end=830,
+  serialized_start=717,
+  serialized_end=802,
 )
 
-_ACTIVITYRECENTRESPONSE.fields_by_name['activity'].message_type = _ACTIVITYRECENT
 _FACERECOGNIZERESPONSE.fields_by_name['result'].enum_type = _FACERECOGNIZERESPONSE_RESULT
 _FACERECOGNIZERESPONSE_RESULT.containing_type = _FACERECOGNIZERESPONSE
 _FACEINDEXESCONFIRM.fields_by_name['user_inf'].message_type = _USERFORMDATA
 DESCRIPTOR.message_types_by_name['ActivityRecent'] = _ACTIVITYRECENT
 DESCRIPTOR.message_types_by_name['ActivityRecentRequest'] = _ACTIVITYRECENTREQUEST
-DESCRIPTOR.message_types_by_name['ActivityRecentResponse'] = _ACTIVITYRECENTRESPONSE
 DESCRIPTOR.message_types_by_name['FaceRecognizeRequest'] = _FACERECOGNIZEREQUEST
 DESCRIPTOR.message_types_by_name['FaceRecognizeResponse'] = _FACERECOGNIZERESPONSE
 DESCRIPTOR.message_types_by_name['FaceIndexesConfirm'] = _FACEINDEXESCONFIRM
@@ -495,13 +475,6 @@ ActivityRecentRequest = _reflection.GeneratedProtocolMessageType('ActivityRecent
   # @@protoc_insertion_point(class_scope:thesis.ActivityRecentRequest)
   })
 _sym_db.RegisterMessage(ActivityRecentRequest)
-
-ActivityRecentResponse = _reflection.GeneratedProtocolMessageType('ActivityRecentResponse', (_message.Message,), {
-  'DESCRIPTOR' : _ACTIVITYRECENTRESPONSE,
-  '__module__' : 'motion_pb2'
-  # @@protoc_insertion_point(class_scope:thesis.ActivityRecentResponse)
-  })
-_sym_db.RegisterMessage(ActivityRecentResponse)
 
 FaceRecognizeRequest = _reflection.GeneratedProtocolMessageType('FaceRecognizeRequest', (_message.Message,), {
   'DESCRIPTOR' : _FACERECOGNIZEREQUEST,
@@ -561,8 +534,8 @@ _MOTION = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=833,
-  serialized_end=1313,
+  serialized_start=805,
+  serialized_end=1349,
   methods=[
   _descriptor.MethodDescriptor(
     name='MotionStreaming',
@@ -620,7 +593,17 @@ _MOTION = _descriptor.ServiceDescriptor(
     index=5,
     containing_service=None,
     input_type=_ACTIVITYRECENTREQUEST,
-    output_type=_ACTIVITYRECENTRESPONSE,
+    output_type=_ACTIVITYRECENT,
+    serialized_options=None,
+    create_key=_descriptor._internal_create_key,
+  ),
+  _descriptor.MethodDescriptor(
+    name='UpdateActivityRecent',
+    full_name='thesis.Motion.UpdateActivityRecent',
+    index=6,
+    containing_service=None,
+    input_type=_ACTIVITYRECENT,
+    output_type=_ACTIVITYRECENT,
     serialized_options=None,
     create_key=_descriptor._internal_create_key,
   ),
