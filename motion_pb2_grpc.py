@@ -34,6 +34,11 @@ class MotionStub(object):
                 request_serializer=motion__pb2.RequestImage.SerializeToString,
                 response_deserializer=motion__pb2.MotionResponse.FromString,
                 )
+        self.RequireFaceRecognizeRequest = channel.unary_unary(
+                '/thesis.Motion/RequireFaceRecognizeRequest',
+                request_serializer=motion__pb2.FaceRecognizeRequest.SerializeToString,
+                response_deserializer=motion__pb2.FaceRecognizeResponse.FromString,
+                )
 
 
 class MotionServicer(object):
@@ -63,6 +68,12 @@ class MotionServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def RequireFaceRecognizeRequest(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MotionServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -85,6 +96,11 @@ def add_MotionServicer_to_server(servicer, server):
                     servicer.FaceRecognizeStreaming,
                     request_deserializer=motion__pb2.RequestImage.FromString,
                     response_serializer=motion__pb2.MotionResponse.SerializeToString,
+            ),
+            'RequireFaceRecognizeRequest': grpc.unary_unary_rpc_method_handler(
+                    servicer.RequireFaceRecognizeRequest,
+                    request_deserializer=motion__pb2.FaceRecognizeRequest.FromString,
+                    response_serializer=motion__pb2.FaceRecognizeResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -157,5 +173,21 @@ class Motion(object):
         return grpc.experimental.stream_stream(request_iterator, target, '/thesis.Motion/FaceRecognizeStreaming',
             motion__pb2.RequestImage.SerializeToString,
             motion__pb2.MotionResponse.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def RequireFaceRecognizeRequest(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_unary(request, target, '/thesis.Motion/RequireFaceRecognizeRequest',
+            motion__pb2.FaceRecognizeRequest.SerializeToString,
+            motion__pb2.FaceRecognizeResponse.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)

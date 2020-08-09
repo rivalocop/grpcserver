@@ -1,3 +1,4 @@
+import json
 import logging
 import pickle
 from concurrent import futures
@@ -18,21 +19,8 @@ import motion_pb2_grpc
 import settings
 from face_detector.face_detect import ImFace
 from motion_detector.motion_detect import ImMotion
-from repository.singleton import faces, users, activities
+from repository.singleton import faces, users, activities, redis_db
 import time
-
-gpus = tf.config.list_physical_devices('GPU')
-if gpus:
-    try:
-        # Currently, memory growth needs to be the same across GPUs
-        for gpu in gpus:
-            tf.config.set_memory_growth(gpu, True)
-        logical_gpus = tf.config.list_logical_devices('GPU')
-        print(len(gpus), "Physical GPUs,", len(
-            logical_gpus), "Logical GPUs")
-    except RuntimeError as e:
-        # Memory growth must be set before GPUs have been initialized
-        print(e)
 
 print("[INFO] loading face detector...")
 net = cv2.dnn.readNetFromCaffe(settings.DEPLOY_FILE, settings.CAFFE_MODEL)
@@ -128,7 +116,7 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
             if len(request.imageIds) > 0:
                 for i in request.imageIds:
                     faces.update_one({'_id': ObjectId(i)}, {
-                                     '$set': {'userId': request.userInf.userId}})
+                        '$set': {'userId': request.userInf.userId}})
 
                 new_activity = RecentActivity(
                     isSuccess=True,
@@ -150,8 +138,8 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
         face_embedding = []
         for ri in request_iterator:
             if ri.isPingMsg:
-                print("Pinged")
                 face_embedding = get_face_indexes(ri.userInf.userId)
+                print("Pinged")
                 yield motion_pb2.MotionResponse(isPongMsg=True)
             else:
                 returned_model = motion_pb2.MotionResponse(
@@ -168,11 +156,39 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
                             match_results = face_recognition.compare_faces(face_embedding, unknown_face_encoding)
                             if match_results[0]:
                                 returned_model = motion_pb2.MotionResponse(
-                                    result=True)
+                                    result=True, confidence=result.confidence)
                 except Exception as err:
                     print(err)
                 finally:
                     yield returned_model
+
+    def RequireFaceRecognizeRequest(self, request, context):
+        is_recognized = False
+        new_activity = RecentActivity(
+            isSuccess=False,
+            title=request.titleRequest,
+            content=request.contentRequest,
+            causeId=request.userId,
+            createdTime=datetime.now()
+        )
+        activity_id = activities.insert_one(new_activity.dict()).inserted_id
+        while True:
+            output = redis_db.get(str(activity_id))
+            if output is not None:
+                output = output.decode("utf-8")
+                output = json.loads(output)
+                if output['is_success']:
+                    is_recognized = True
+                else:
+                    is_recognized = False
+                redis_db.delete(str(activity_id))
+                break
+        if is_recognized:
+            return motion_pb2.FaceRecognizeResponse(activity_id=str(activity_id),
+                                                    result=motion_pb2.FaceRecognizeResponse.Result.RESULT_SUCCESS)
+        else:
+            return motion_pb2.FaceRecognizeResponse(activity_id=str(activity_id),
+                                                    result=motion_pb2.FaceRecognizeResponse.Result.RESULT_FAILURE)
 
 
 def serve():

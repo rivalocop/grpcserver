@@ -6,7 +6,24 @@ service Motion{
     rpc MotionStreaming (stream RequestImage) returns (stream MotionResponse);
     rpc RegisterFaceIndexes (UserFormData) returns (UserFormData);
     rpc UpdateFaceIndexes (FaceIndexesConfirm) returns (FaceIndexesResponse);
-    rpc FaceRecognizeStreaming (stream RequestImage) returns (stream MotionResponse); 
+    rpc FaceRecognizeStreaming (stream RequestImage) returns (stream MotionResponse);
+    rpc RequireFaceRecognizeRequest (FaceRecognizeRequest) returns (FaceRecognizeResponse);
+}
+
+message FaceRecognizeRequest{
+    string userId = 1;
+    string titleRequest = 2;
+    string contentRequest = 3;
+}
+
+message FaceRecognizeResponse{
+    string activityId = 1;
+    enum Result{
+        RESULT_SUCCESS = 0;
+        RESULT_FAILURE = 1;
+        RESULT_DENY = 2;
+    }
+    Result result = 2;
 }
 
 message FaceIndexesConfirm{

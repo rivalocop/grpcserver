@@ -37,3 +37,4 @@ MOTION = BASE_DIR + '/models/trained_model.h5'
 # MOTION = BASE_DIR + '/models/vgg.h5'
 
 LABELS_LIST = ['down' 'front' 'left' 'right' 'up']
+PREDICT_QUEUE = 'predict_queue'
