@@ -18,6 +18,7 @@ message ActivityRecent{
     string content = 3;
     string cause_id = 4;
     string created_time = 5;
+    string modified_time = 6;
 }
 
 message ActivityRecentRequest{

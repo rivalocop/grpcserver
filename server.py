@@ -47,6 +47,7 @@ class RecentActivity(BaseModel):
     content: str
     causeId: str
     createdTime: datetime
+    modifiedTime: datetime
 
 
 def preprocess_image(image):
@@ -138,7 +139,7 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
         face_embedding = []
         for ri in request_iterator:
             if ri.is_ping_msg:
-                face_embedding = get_face_indexes(ri.userInf.userId)
+                face_embedding = get_face_indexes(ri.user_inf.user_id)
                 print("Pinged")
                 yield motion_pb2.MotionResponse(is_pong_msg=True)
             else:
@@ -203,15 +204,19 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
 
     def UpdateActivityRecent(self, request, context):
         stored_activity = activities.find_one({'causeId': request.cause_id, 'isSuccess': False})
+        stored_activity_id = stored_activity['_id']
         stored_activity_model = RecentActivity(**stored_activity)
-        stored_activity_model.isSuccess = request.is_success
-        activities.
+        update_data = {'isSuccess': request.is_success, 'modifiedTime': datetime.now()}
+        update_activity = stored_activity_model.copy(update=update_data)
+        activities.update_one({'_id': stored_activity_id}, {'$set': update_activity.dict()})
+        redis_db.set(str(stored_activity_id),update_activity.json())
         return motion_pb2.ActivityRecent(
-            is_success=request.is_success,
-            title=request.title,
-            content=request.content,
-            cause_id=request.causeId,
-            created_time=request.created_time
+            is_success=update_activity.isSuccess,
+            title=update_activity.title,
+            content=update_activity.content,
+            cause_id=update_activity.causeId,
+            created_time=update_activity.createdTime,
+            modified_time=update_activity.modifiedTime
         )
 
 
