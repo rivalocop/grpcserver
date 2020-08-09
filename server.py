@@ -80,9 +80,9 @@ def predict_process(image, location):
 class MotionServicer(motion_pb2_grpc.MotionServicer):
     def MotionStreaming(self, request_iterator, context):
         for ri in request_iterator:
-            if ri.isPingMsg:
+            if ri.is_ping_msg:
                 print("Pinged")
-                yield motion_pb2.MotionResponse(isPongMsg=True)
+                yield motion_pb2.MotionResponse(is_pong_msg=True)
             else:
                 returned_model = motion_pb2.MotionResponse(
                     result=False, confidence=0.0, id='None')
@@ -106,12 +106,12 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
                     yield returned_model
 
     def RegisterFaceIndexes(self, request, context):
-        registered_user = User(userId=request.userId)
+        registered_user = User(userId=request.user_id)
         users.insert_one(registered_user.dict())
-        return motion_pb2.UserFormData(userId=registered_user.userId)
+        return motion_pb2.UserFormData(user_id=registered_user.userId)
 
     def UpdateFaceIndexes(self, request, context):
-        returned_model = motion_pb2.FaceIndexesResponse(isSuccess=False)
+        returned_model = motion_pb2.FaceIndexesResponse(is_success=False)
         try:
             if len(request.imageIds) > 0:
                 for i in request.imageIds:
@@ -128,7 +128,7 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
                 activity_id = activities.insert_one(
                     new_activity.dict()).inserted_id
                 returned_model = motion_pb2.FaceIndexesResponse(
-                    isSuccess=new_activity.isSuccess, activityId=str(activity_id))
+                    is_success=new_activity.isSuccess, activity_id=str(activity_id))
         except Exception as err:
             print(err)
         finally:
@@ -137,10 +137,10 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
     def FaceRecognizeStreaming(self, request_iterator, context):
         face_embedding = []
         for ri in request_iterator:
-            if ri.isPingMsg:
+            if ri.is_ping_msg:
                 face_embedding = get_face_indexes(ri.userInf.userId)
                 print("Pinged")
-                yield motion_pb2.MotionResponse(isPongMsg=True)
+                yield motion_pb2.MotionResponse(is_pong_msg=True)
             else:
                 returned_model = motion_pb2.MotionResponse(
                     result=False, confidence=0.0, id='None')

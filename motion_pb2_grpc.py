@@ -39,6 +39,11 @@ class MotionStub(object):
                 request_serializer=motion__pb2.FaceRecognizeRequest.SerializeToString,
                 response_deserializer=motion__pb2.FaceRecognizeResponse.FromString,
                 )
+        self.GetActivityRecentList = channel.unary_stream(
+                '/thesis.Motion/GetActivityRecentList',
+                request_serializer=motion__pb2.ActivityRecentRequest.SerializeToString,
+                response_deserializer=motion__pb2.ActivityRecentResponse.FromString,
+                )
 
 
 class MotionServicer(object):
@@ -74,6 +79,12 @@ class MotionServicer(object):
         context.set_details('Method not implemented!')
         raise NotImplementedError('Method not implemented!')
 
+    def GetActivityRecentList(self, request, context):
+        """Missing associated documentation comment in .proto file."""
+        context.set_code(grpc.StatusCode.UNIMPLEMENTED)
+        context.set_details('Method not implemented!')
+        raise NotImplementedError('Method not implemented!')
+
 
 def add_MotionServicer_to_server(servicer, server):
     rpc_method_handlers = {
@@ -101,6 +112,11 @@ def add_MotionServicer_to_server(servicer, server):
                     servicer.RequireFaceRecognizeRequest,
                     request_deserializer=motion__pb2.FaceRecognizeRequest.FromString,
                     response_serializer=motion__pb2.FaceRecognizeResponse.SerializeToString,
+            ),
+            'GetActivityRecentList': grpc.unary_stream_rpc_method_handler(
+                    servicer.GetActivityRecentList,
+                    request_deserializer=motion__pb2.ActivityRecentRequest.FromString,
+                    response_serializer=motion__pb2.ActivityRecentResponse.SerializeToString,
             ),
     }
     generic_handler = grpc.method_handlers_generic_handler(
@@ -189,5 +205,21 @@ class Motion(object):
         return grpc.experimental.unary_unary(request, target, '/thesis.Motion/RequireFaceRecognizeRequest',
             motion__pb2.FaceRecognizeRequest.SerializeToString,
             motion__pb2.FaceRecognizeResponse.FromString,
+            options, channel_credentials,
+            call_credentials, compression, wait_for_ready, timeout, metadata)
+
+    @staticmethod
+    def GetActivityRecentList(request,
+            target,
+            options=(),
+            channel_credentials=None,
+            call_credentials=None,
+            compression=None,
+            wait_for_ready=None,
+            timeout=None,
+            metadata=None):
+        return grpc.experimental.unary_stream(request, target, '/thesis.Motion/GetActivityRecentList',
+            motion__pb2.ActivityRecentRequest.SerializeToString,
+            motion__pb2.ActivityRecentResponse.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)

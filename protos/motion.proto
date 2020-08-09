@@ -8,16 +8,31 @@ service Motion{
     rpc UpdateFaceIndexes (FaceIndexesConfirm) returns (FaceIndexesResponse);
     rpc FaceRecognizeStreaming (stream RequestImage) returns (stream MotionResponse);
     rpc RequireFaceRecognizeRequest (FaceRecognizeRequest) returns (FaceRecognizeResponse);
+    rpc GetActivityRecentList(ActivityRecentRequest) returns (stream ActivityRecentResponse);
+}
+
+message ActivityRecent{
+    bool is_success = 1;
+    string title = 2;
+    string content = 3;
+}
+
+message ActivityRecentRequest{
+    string user_id = 1;
+}
+
+message ActivityRecentResponse{
+    ActivityRecent activity = 1;
 }
 
 message FaceRecognizeRequest{
-    string userId = 1;
+    string user_id = 1;
     string titleRequest = 2;
     string contentRequest = 3;
 }
 
 message FaceRecognizeResponse{
-    string activityId = 1;
+    string activity_id = 1;
     enum Result{
         RESULT_SUCCESS = 0;
         RESULT_FAILURE = 1;
@@ -27,29 +42,29 @@ message FaceRecognizeResponse{
 }
 
 message FaceIndexesConfirm{
-    UserFormData userInf = 1;
-    repeated string imageIds = 2;
+    UserFormData user_inf = 1;
+    repeated string image_ids = 2;
 }
 
 message FaceIndexesResponse{
-    string activityId = 1;
-    bool isSuccess = 2;
+    string activity_id = 1;
+    bool is_success = 2;
 }
 
 message UserFormData {
-    string userId = 1;
-    bool isFaceVerify = 2;
+    string user_id = 1;
+    bool is_face_verify = 2;
 }
 
 message RequestImage {
-    string expectedLabel = 1;
-    bytes imagePayload = 2;
-    bool isPingMsg = 3;
+    string expected_label = 1;
+    bytes image_payload = 2;
+    bool is_ping_msg = 3;
 }
 
 message MotionResponse{
     string id = 1;
     bool result = 2;
     double confidence = 3;
-    bool isPongMsg = 4;
+    bool is_pong_msg = 4;
 }
