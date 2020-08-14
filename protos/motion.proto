@@ -28,8 +28,8 @@ message ActivityRecentRequest{
 
 message FaceRecognizeRequest{
     string user_id = 1;
-    string titleRequest = 2;
-    string contentRequest = 3;
+    string title_request = 2;
+    string content_request = 3;
 }
 
 message FaceRecognizeResponse{

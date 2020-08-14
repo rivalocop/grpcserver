@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto3',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\"\x98\x01\n\x0e\x41\x63tivityRecent\x12\x13\n\x0b\x61\x63tivity_id\x18\x01 \x01(\t\x12\x12\n\nis_success\x18\x02 \x01(\x08\x12\r\n\x05title\x18\x03 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x04 \x01(\t\x12\x10\n\x08\x63\x61use_id\x18\x05 \x01(\t\x12\x14\n\x0c\x63reated_time\x18\x06 \x01(\t\x12\x15\n\rmodified_time\x18\x07 \x01(\t\"(\n\x15\x41\x63tivityRecentRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"U\n\x14\x46\x61\x63\x65RecognizeRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x14\n\x0ctitleRequest\x18\x02 \x01(\t\x12\x16\n\x0e\x63ontentRequest\x18\x03 \x01(\t\"\xa5\x01\n\x15\x46\x61\x63\x65RecognizeResponse\x12\x13\n\x0b\x61\x63tivity_id\x18\x01 \x01(\t\x12\x34\n\x06result\x18\x02 \x01(\x0e\x32$.thesis.FaceRecognizeResponse.Result\"A\n\x06Result\x12\x12\n\x0eRESULT_SUCCESS\x10\x00\x12\x12\n\x0eRESULT_FAILURE\x10\x01\x12\x0f\n\x0bRESULT_DENY\x10\x02\"O\n\x12\x46\x61\x63\x65IndexesConfirm\x12&\n\x08user_inf\x18\x01 \x01(\x0b\x32\x14.thesis.UserFormData\x12\x11\n\timage_ids\x18\x02 \x03(\t\">\n\x13\x46\x61\x63\x65IndexesResponse\x12\x13\n\x0b\x61\x63tivity_id\x18\x01 \x01(\t\x12\x12\n\nis_success\x18\x02 \x01(\x08\"7\n\x0cUserFormData\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x16\n\x0eis_face_verify\x18\x02 \x01(\x08\"c\n\x0cRequestImage\x12\x16\n\x0e\x65xpected_label\x18\x01 \x01(\t\x12\x15\n\rimage_payload\x18\x02 \x01(\x0c\x12\x13\n\x0bis_ping_msg\x18\x03 \x01(\x08\x12\x0f\n\x07user_id\x18\x04 \x01(\t\"U\n\x0eMotionResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\x08\x12\x12\n\nconfidence\x18\x03 \x01(\x01\x12\x13\n\x0bis_pong_msg\x18\x04 \x01(\x08\x32\x9b\x04\n\x06Motion\x12\x43\n\x0fMotionStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12\x41\n\x13RegisterFaceIndexes\x12\x14.thesis.UserFormData\x1a\x14.thesis.UserFormData\x12G\n\x11UpdateFaceIndexes\x12\x1a.thesis.FaceIndexesConfirm\x1a\x16.thesis.ActivityRecent\x12J\n\x16\x46\x61\x63\x65RecognizeStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12Z\n\x1bRequireFaceRecognizeRequest\x12\x1c.thesis.FaceRecognizeRequest\x1a\x1d.thesis.FaceRecognizeResponse\x12P\n\x15GetActivityRecentList\x12\x1d.thesis.ActivityRecentRequest\x1a\x16.thesis.ActivityRecent0\x01\x12\x46\n\x14UpdateActivityRecent\x12\x16.thesis.ActivityRecent\x1a\x16.thesis.ActivityRecentb\x06proto3'
+  serialized_pb=b'\n\x0cmotion.proto\x12\x06thesis\"\x98\x01\n\x0e\x41\x63tivityRecent\x12\x13\n\x0b\x61\x63tivity_id\x18\x01 \x01(\t\x12\x12\n\nis_success\x18\x02 \x01(\x08\x12\r\n\x05title\x18\x03 \x01(\t\x12\x0f\n\x07\x63ontent\x18\x04 \x01(\t\x12\x10\n\x08\x63\x61use_id\x18\x05 \x01(\t\x12\x14\n\x0c\x63reated_time\x18\x06 \x01(\t\x12\x15\n\rmodified_time\x18\x07 \x01(\t\"(\n\x15\x41\x63tivityRecentRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\"W\n\x14\x46\x61\x63\x65RecognizeRequest\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x15\n\rtitle_request\x18\x02 \x01(\t\x12\x17\n\x0f\x63ontent_request\x18\x03 \x01(\t\"\xa5\x01\n\x15\x46\x61\x63\x65RecognizeResponse\x12\x13\n\x0b\x61\x63tivity_id\x18\x01 \x01(\t\x12\x34\n\x06result\x18\x02 \x01(\x0e\x32$.thesis.FaceRecognizeResponse.Result\"A\n\x06Result\x12\x12\n\x0eRESULT_SUCCESS\x10\x00\x12\x12\n\x0eRESULT_FAILURE\x10\x01\x12\x0f\n\x0bRESULT_DENY\x10\x02\"O\n\x12\x46\x61\x63\x65IndexesConfirm\x12&\n\x08user_inf\x18\x01 \x01(\x0b\x32\x14.thesis.UserFormData\x12\x11\n\timage_ids\x18\x02 \x03(\t\">\n\x13\x46\x61\x63\x65IndexesResponse\x12\x13\n\x0b\x61\x63tivity_id\x18\x01 \x01(\t\x12\x12\n\nis_success\x18\x02 \x01(\x08\"7\n\x0cUserFormData\x12\x0f\n\x07user_id\x18\x01 \x01(\t\x12\x16\n\x0eis_face_verify\x18\x02 \x01(\x08\"c\n\x0cRequestImage\x12\x16\n\x0e\x65xpected_label\x18\x01 \x01(\t\x12\x15\n\rimage_payload\x18\x02 \x01(\x0c\x12\x13\n\x0bis_ping_msg\x18\x03 \x01(\x08\x12\x0f\n\x07user_id\x18\x04 \x01(\t\"U\n\x0eMotionResponse\x12\n\n\x02id\x18\x01 \x01(\t\x12\x0e\n\x06result\x18\x02 \x01(\x08\x12\x12\n\nconfidence\x18\x03 \x01(\x01\x12\x13\n\x0bis_pong_msg\x18\x04 \x01(\x08\x32\x9b\x04\n\x06Motion\x12\x43\n\x0fMotionStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12\x41\n\x13RegisterFaceIndexes\x12\x14.thesis.UserFormData\x1a\x14.thesis.UserFormData\x12G\n\x11UpdateFaceIndexes\x12\x1a.thesis.FaceIndexesConfirm\x1a\x16.thesis.ActivityRecent\x12J\n\x16\x46\x61\x63\x65RecognizeStreaming\x12\x14.thesis.RequestImage\x1a\x16.thesis.MotionResponse(\x01\x30\x01\x12Z\n\x1bRequireFaceRecognizeRequest\x12\x1c.thesis.FaceRecognizeRequest\x1a\x1d.thesis.FaceRecognizeResponse\x12P\n\x15GetActivityRecentList\x12\x1d.thesis.ActivityRecentRequest\x1a\x16.thesis.ActivityRecent0\x01\x12\x46\n\x14UpdateActivityRecent\x12\x16.thesis.ActivityRecent\x1a\x16.thesis.ActivityRecentb\x06proto3'
 )
 
 
@@ -49,8 +49,8 @@ _FACERECOGNIZERESPONSE_RESULT = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   serialized_options=None,
-  serialized_start=409,
-  serialized_end=474,
+  serialized_start=411,
+  serialized_end=476,
 )
 _sym_db.RegisterEnumDescriptor(_FACERECOGNIZERESPONSE_RESULT)
 
@@ -177,14 +177,14 @@ _FACERECOGNIZEREQUEST = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='titleRequest', full_name='thesis.FaceRecognizeRequest.titleRequest', index=1,
+      name='title_request', full_name='thesis.FaceRecognizeRequest.title_request', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='contentRequest', full_name='thesis.FaceRecognizeRequest.contentRequest', index=2,
+      name='content_request', full_name='thesis.FaceRecognizeRequest.content_request', index=2,
       number=3, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -203,7 +203,7 @@ _FACERECOGNIZEREQUEST = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=221,
-  serialized_end=306,
+  serialized_end=308,
 )
 
 
@@ -242,8 +242,8 @@ _FACERECOGNIZERESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=309,
-  serialized_end=474,
+  serialized_start=311,
+  serialized_end=476,
 )
 
 
@@ -281,8 +281,8 @@ _FACEINDEXESCONFIRM = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=476,
-  serialized_end=555,
+  serialized_start=478,
+  serialized_end=557,
 )
 
 
@@ -320,8 +320,8 @@ _FACEINDEXESRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=557,
-  serialized_end=619,
+  serialized_start=559,
+  serialized_end=621,
 )
 
 
@@ -359,8 +359,8 @@ _USERFORMDATA = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=621,
-  serialized_end=676,
+  serialized_start=623,
+  serialized_end=678,
 )
 
 
@@ -412,8 +412,8 @@ _REQUESTIMAGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=678,
-  serialized_end=777,
+  serialized_start=680,
+  serialized_end=779,
 )
 
 
@@ -465,8 +465,8 @@ _MOTIONRESPONSE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=779,
-  serialized_end=864,
+  serialized_start=781,
+  serialized_end=866,
 )
 
 _FACERECOGNIZERESPONSE.fields_by_name['result'].enum_type = _FACERECOGNIZERESPONSE_RESULT
@@ -555,8 +555,8 @@ _MOTION = _descriptor.ServiceDescriptor(
   index=0,
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_start=867,
-  serialized_end=1406,
+  serialized_start=869,
+  serialized_end=1408,
   methods=[
   _descriptor.MethodDescriptor(
     name='MotionStreaming',

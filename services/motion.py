@@ -147,9 +147,9 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
     # request face recognize from external system
     def RequireFaceRecognizeRequest(self, request, context):
         new_activity = RecentActivity(
-            title=request.titleRequest,
-            content=request.contentRequest,
-            causeId=request.userId
+            title=request.title_request,
+            content=request.content_request,
+            causeId=request.user_id
         )
         activity_id = activities.insert_one(new_activity.dict()).inserted_id
         while True:
@@ -188,7 +188,7 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
         stored_activity = activities.find_one(
             {'_id': ObjectId(request.activity_id)})
         stored_activity_model = RecentActivity(**stored_activity)
-        update_data = {'isSuccess': False,
+        update_data = {'isSuccess': request.is_success,
                        'modifiedTime': datetime.now()}
         update_activity = stored_activity_model.copy(update=update_data)
         activities.update_one({'_id': ObjectId(request.activity_id)}, {
