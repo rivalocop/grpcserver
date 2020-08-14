@@ -27,7 +27,7 @@ class MotionStub(object):
         self.UpdateFaceIndexes = channel.unary_unary(
                 '/thesis.Motion/UpdateFaceIndexes',
                 request_serializer=motion__pb2.FaceIndexesConfirm.SerializeToString,
-                response_deserializer=motion__pb2.FaceIndexesResponse.FromString,
+                response_deserializer=motion__pb2.ActivityRecent.FromString,
                 )
         self.FaceRecognizeStreaming = channel.stream_stream(
                 '/thesis.Motion/FaceRecognizeStreaming',
@@ -112,7 +112,7 @@ def add_MotionServicer_to_server(servicer, server):
             'UpdateFaceIndexes': grpc.unary_unary_rpc_method_handler(
                     servicer.UpdateFaceIndexes,
                     request_deserializer=motion__pb2.FaceIndexesConfirm.FromString,
-                    response_serializer=motion__pb2.FaceIndexesResponse.SerializeToString,
+                    response_serializer=motion__pb2.ActivityRecent.SerializeToString,
             ),
             'FaceRecognizeStreaming': grpc.stream_stream_rpc_method_handler(
                     servicer.FaceRecognizeStreaming,
@@ -188,7 +188,7 @@ class Motion(object):
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/thesis.Motion/UpdateFaceIndexes',
             motion__pb2.FaceIndexesConfirm.SerializeToString,
-            motion__pb2.FaceIndexesResponse.FromString,
+            motion__pb2.ActivityRecent.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)
 

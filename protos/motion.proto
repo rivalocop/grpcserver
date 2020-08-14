@@ -5,7 +5,7 @@ package thesis;
 service Motion{
     rpc MotionStreaming (stream RequestImage) returns (stream MotionResponse);
     rpc RegisterFaceIndexes (UserFormData) returns (UserFormData);
-    rpc UpdateFaceIndexes (FaceIndexesConfirm) returns (FaceIndexesResponse);
+    rpc UpdateFaceIndexes (FaceIndexesConfirm) returns (ActivityRecent);
     rpc FaceRecognizeStreaming (stream RequestImage) returns (stream MotionResponse);
     rpc RequireFaceRecognizeRequest (FaceRecognizeRequest) returns (FaceRecognizeResponse);
     rpc GetActivityRecentList(ActivityRecentRequest) returns (stream ActivityRecent);
@@ -13,12 +13,13 @@ service Motion{
 }
 
 message ActivityRecent{
-    bool is_success = 1;
-    string title = 2;
-    string content = 3;
-    string cause_id = 4;
-    string created_time = 5;
-    string modified_time = 6;
+    string activity_id = 1;
+    bool is_success = 2;
+    string title = 3;
+    string content = 4;
+    string cause_id = 5;
+    string created_time = 6;
+    string modified_time = 7;
 }
 
 message ActivityRecentRequest{
@@ -60,6 +61,7 @@ message RequestImage {
     string expected_label = 1;
     bytes image_payload = 2;
     bool is_ping_msg = 3;
+    string user_id = 4;
 }
 
 message MotionResponse{
