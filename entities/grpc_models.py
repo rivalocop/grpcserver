@@ -1,7 +1,15 @@
 from datetime import datetime
+from enum import Enum, IntEnum
 from typing import Optional, List
 
 from pydantic import BaseModel
+
+
+class SuccessState(Enum):
+    RESULT_SUCCESS = 0
+    RESULT_FAILURE = 1
+    RESULT_DENY = 2
+    RESULT_UNDEFINED = 3
 
 
 class FaceIndexes(BaseModel):
@@ -16,7 +24,7 @@ class User(BaseModel):
 
 
 class RecentActivity(BaseModel):
-    isSuccess: bool = False
+    successState: SuccessState = 3
     title: str
     content: str
     causeId: str

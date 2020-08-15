@@ -36,8 +36,8 @@ class MotionStub(object):
                 )
         self.RequireFaceRecognizeRequest = channel.unary_unary(
                 '/thesis.Motion/RequireFaceRecognizeRequest',
-                request_serializer=motion__pb2.FaceRecognizeRequest.SerializeToString,
-                response_deserializer=motion__pb2.FaceRecognizeResponse.FromString,
+                request_serializer=motion__pb2.ActivityRecent.SerializeToString,
+                response_deserializer=motion__pb2.ActivityRecent.FromString,
                 )
         self.GetActivityRecentList = channel.unary_stream(
                 '/thesis.Motion/GetActivityRecentList',
@@ -121,8 +121,8 @@ def add_MotionServicer_to_server(servicer, server):
             ),
             'RequireFaceRecognizeRequest': grpc.unary_unary_rpc_method_handler(
                     servicer.RequireFaceRecognizeRequest,
-                    request_deserializer=motion__pb2.FaceRecognizeRequest.FromString,
-                    response_serializer=motion__pb2.FaceRecognizeResponse.SerializeToString,
+                    request_deserializer=motion__pb2.ActivityRecent.FromString,
+                    response_serializer=motion__pb2.ActivityRecent.SerializeToString,
             ),
             'GetActivityRecentList': grpc.unary_stream_rpc_method_handler(
                     servicer.GetActivityRecentList,
@@ -219,8 +219,8 @@ class Motion(object):
             timeout=None,
             metadata=None):
         return grpc.experimental.unary_unary(request, target, '/thesis.Motion/RequireFaceRecognizeRequest',
-            motion__pb2.FaceRecognizeRequest.SerializeToString,
-            motion__pb2.FaceRecognizeResponse.FromString,
+            motion__pb2.ActivityRecent.SerializeToString,
+            motion__pb2.ActivityRecent.FromString,
             options, channel_credentials,
             call_credentials, compression, wait_for_ready, timeout, metadata)
 

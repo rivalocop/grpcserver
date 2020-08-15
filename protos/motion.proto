@@ -2,71 +2,72 @@ syntax = "proto3";
 
 package thesis;
 
-service Motion{
-    rpc MotionStreaming (stream RequestImage) returns (stream MotionResponse);
-    rpc RegisterFaceIndexes (UserFormData) returns (UserFormData);
-    rpc UpdateFaceIndexes (FaceIndexesConfirm) returns (ActivityRecent);
-    rpc FaceRecognizeStreaming (stream RequestImage) returns (stream MotionResponse);
-    rpc RequireFaceRecognizeRequest (FaceRecognizeRequest) returns (FaceRecognizeResponse);
-    rpc GetActivityRecentList(ActivityRecentRequest) returns (stream ActivityRecent);
-    rpc UpdateActivityRecent(ActivityRecent) returns (ActivityRecent);
+service Motion {
+  rpc MotionStreaming(stream RequestImage) returns (stream MotionResponse);
+  rpc RegisterFaceIndexes(UserFormData) returns (UserFormData);
+  rpc UpdateFaceIndexes(FaceIndexesConfirm) returns (ActivityRecent);
+  rpc FaceRecognizeStreaming(stream RequestImage)
+      returns (stream MotionResponse);
+  rpc RequireFaceRecognizeRequest(ActivityRecent) returns (ActivityRecent);
+  rpc GetActivityRecentList(ActivityRecentRequest)
+      returns (stream ActivityRecent);
+  rpc UpdateActivityRecent(ActivityRecent) returns (ActivityRecent);
 }
 
-message ActivityRecent{
-    string activity_id = 1;
-    bool is_success = 2;
-    string title = 3;
-    string content = 4;
-    string cause_id = 5;
-    string created_time = 6;
-    string modified_time = 7;
+message ActivityRecent {
+  string activity_id = 1;
+  string title = 2;
+  string content = 3;
+  string cause_id = 4;
+  string created_time = 5;
+  string modified_time = 6;
+
+  enum Result {
+    RESULT_SUCCESS = 0;
+    RESULT_FAILURE = 1;
+    RESULT_DENY = 2;
+    RESULT_UNDEFINED = 3;
+  }
+  Result result = 7;
 }
 
-message ActivityRecentRequest{
-    string user_id = 1;
+message ActivityRecentRequest { string user_id = 1; }
+
+message FaceRecognizeResponse {
+  string activity_id = 1;
+  enum Result {
+    RESULT_SUCCESS = 0;
+    RESULT_FAILURE = 1;
+    RESULT_DENY = 2;
+  }
+  Result result = 2;
 }
 
-message FaceRecognizeRequest{
-    string user_id = 1;
-    string title_request = 2;
-    string content_request = 3;
+message FaceIndexesConfirm {
+  UserFormData user_inf = 1;
+  repeated string image_ids = 2;
 }
 
-message FaceRecognizeResponse{
-    string activity_id = 1;
-    enum Result{
-        RESULT_SUCCESS = 0;
-        RESULT_FAILURE = 1;
-        RESULT_DENY = 2;
-    }
-    Result result = 2;
-}
-
-message FaceIndexesConfirm{
-    UserFormData user_inf = 1;
-    repeated string image_ids = 2;
-}
-
-message FaceIndexesResponse{
-    string activity_id = 1;
-    bool is_success = 2;
+message FaceIndexesResponse {
+  string activity_id = 1;
+  bool is_success = 2;
 }
 
 message UserFormData {
-    string user_id = 1;
-    bool is_face_verify = 2;
+  string user_id = 1;
+  bool is_face_verify = 2;
 }
 
 message RequestImage {
-    string expected_label = 1;
-    bytes image_payload = 2;
-    bool is_ping_msg = 3;
-    string user_id = 4;
+  string expected_label = 1;
+  bytes image_payload = 2;
+  bool is_ping_msg = 3;
+  string user_id = 4;
 }
 
-message MotionResponse{
-    string id = 1;
-    bool result = 2;
-    double confidence = 3;
-    bool is_pong_msg = 4;
+message MotionResponse {
+  string id = 1;
+  bool result = 2;
+  double confidence = 3;
+  bool is_pong_msg = 4;
 }

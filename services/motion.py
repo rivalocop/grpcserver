@@ -11,13 +11,27 @@ import tensorflow as tf
 from bson import ObjectId
 
 import motion_pb2
+from motion_pb2 import ActivityRecent
 import motion_pb2_grpc
 import settings
-from entities.grpc_models import User, RecentActivity, FaceIndexes
+from entities.grpc_models import SuccessState, User, RecentActivity, FaceIndexes
 from face_detector.face_detect import ImFace
 from motion_detector.motion_detect import ImMotion
 from repository.singleton import faces, users, activities, redis_db
 from utils.image_utils import preprocess_raw_image, preprocess_png_image
+
+gpus = tf.config.experimental.list_physical_devices('GPU')
+if gpus:
+    try:
+        # Currently, memory growth needs to be the same across GPUs
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+        logical_gpus = tf.config.experimental.list_logical_devices('GPU')
+        print(len(gpus), "Physical GPUs,", len(
+            logical_gpus), "Logical GPUs")
+    except RuntimeError as e:
+        # Memory growth must be set before GPUs have been initialized
+        print(e)
 
 print("[INFO] loading face detector...")
 net = cv2.dnn.readNetFromCaffe(settings.DEPLOY_FILE, settings.CAFFE_MODEL)
@@ -130,15 +144,17 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
                     box = face_recognition.face_locations(image)
                     if len(box) > 0:
                         result = predict_process(image, box)
-                        print(
-                            f"predict {ri.expected_label} got {result.label} with confidence: {result.confidence}")
-                        if result.label == ri.expected_label and result.confidence > 0.5:
-                            unknown_face_encoding = np.array(result.encoding)
-                            match_results = face_recognition.compare_faces(
-                                face_embedding, unknown_face_encoding)
-                            if match_results[0]:
-                                returned_model = motion_pb2.MotionResponse(
-                                    result=True, confidence=result.confidence)
+                        if result is not None:
+                            print(
+                                f"predict {ri.expected_label} got {result.label} with confidence: {result.confidence}")
+                            if result.label == ri.expected_label and result.confidence > 0.5:
+                                unknown_face_encoding = np.array(
+                                    result.encoding)
+                                match_results = face_recognition.compare_faces(
+                                    face_embedding, unknown_face_encoding)
+                                if match_results[0]:
+                                    returned_model = motion_pb2.MotionResponse(
+                                        result=True, confidence=result.confidence)
                 except Exception as err:
                     logging.exception(err)
                 finally:
@@ -147,9 +163,9 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
     # request face recognize from external system
     def RequireFaceRecognizeRequest(self, request, context):
         new_activity = RecentActivity(
-            title=request.title_request,
-            content=request.content_request,
-            causeId=request.user_id
+            title=request.title,
+            content=request.content,
+            causeId=request.cause_id
         )
         activity_id = activities.insert_one(new_activity.dict()).inserted_id
         while True:
@@ -157,18 +173,24 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
             if output is not None:
                 output = output.decode("utf-8")
                 output = json.loads(output)
-                if output['isSuccess']:
-                    is_recognized = True
-                else:
-                    is_recognized = False
+                output = RecentActivity(**output)
                 redis_db.delete(str(activity_id))
                 break
-        if is_recognized:
-            return motion_pb2.FaceRecognizeResponse(activity_id=str(activity_id),
-                                                    result=motion_pb2.FaceRecognizeResponse.Result.RESULT_SUCCESS)
-        else:
-            return motion_pb2.FaceRecognizeResponse(activity_id=str(activity_id),
-                                                    result=motion_pb2.FaceRecognizeResponse.Result.RESULT_FAILURE)
+        returned_model = motion_pb2.ActivityRecent(
+            activity_id=str(activity_id),
+            title=output.title,
+            content=output.content,
+            cause_id=output.causeId,
+            created_time=output.createdTime.strftime("%Y-%m-%d %H:%M:%S"),
+            modified_time=output.modifiedTime.strftime("%Y-%m-%d %H:%M:%S"),
+        )
+        if output.successState is SuccessState.RESULT_SUCCESS:
+            returned_model.result = 0
+        elif output.successState is SuccessState.RESULT_FAILURE:
+            returned_model.result = 1
+        elif output.successState is SuccessState.RESULT_DENY:
+            returned_model.result = 2
+        return returned_model
 
     def GetActivityRecentList(self, request, context):
         list_activities = activities.find({'causeId': request.user_id}) \
@@ -176,7 +198,7 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
         for a in list_activities:
             yield motion_pb2.ActivityRecent(
                 activity_id=str(a['_id']),
-                is_success=a['isSuccess'],
+                result=a['successState'],
                 title=a['title'],
                 content=a['content'],
                 cause_id=a['causeId'],
@@ -188,14 +210,14 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
         stored_activity = activities.find_one(
             {'_id': ObjectId(request.activity_id)})
         stored_activity_model = RecentActivity(**stored_activity)
-        update_data = {'isSuccess': request.is_success,
+        update_data = {'successState': request.result,
                        'modifiedTime': datetime.now()}
         update_activity = stored_activity_model.copy(update=update_data)
         activities.update_one({'_id': ObjectId(request.activity_id)}, {
             '$set': update_activity.dict()})
         redis_db.set(request.activity_id, update_activity.json())
         return motion_pb2.ActivityRecent(
-            is_success=update_activity.isSuccess,
+            result=update_activity.successState,
             title=update_activity.title,
             content=update_activity.content,
             cause_id=update_activity.causeId,
