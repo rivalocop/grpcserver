@@ -44,7 +44,7 @@ message FaceRecognizeResponse {
 }
 
 message FaceIndexesConfirm {
-  UserFormData user_inf = 1;
+  string user_id = 1;
   repeated string image_ids = 2;
 }
 
@@ -63,6 +63,7 @@ message RequestImage {
   bytes image_payload = 2;
   bool is_ping_msg = 3;
   string user_id = 4;
+  bool is_recognize = 5;
 }
 
 message MotionResponse {

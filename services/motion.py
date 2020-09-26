@@ -2,7 +2,7 @@ import json
 import pickle
 import time
 import logging
-from datetime import datetime
+from datetime import date, datetime
 
 import cv2
 import face_recognition
@@ -47,6 +47,7 @@ def get_face_indexes(user_id):
 
 
 def predict_process(image, location):
+    new_embedding = None
     try:
         extracted_face = ImFace(image, net).face
         motion = ImMotion(extracted_face, le,
@@ -56,9 +57,10 @@ def predict_process(image, location):
             confidence=motion.result['confidence'],
             label=motion.result['label'],
             encoding=encodings[0].tolist())
-        return new_embedding
     except Exception as err:
         print(err)
+    finally:
+        return new_embedding
 
 
 class MotionServicer(motion_pb2_grpc.MotionServicer):
@@ -97,28 +99,30 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
 
     # update face embedding list for current user
     def UpdateFaceIndexes(self, request, context):
-        returned_model = motion_pb2.FaceIndexesResponse(is_success=False)
+        returned_model = None
         try:
-            if len(request.imageIds) > 0:
+            if len(request.image_ids) > 0:
                 for i in request.image_ids:
                     faces.update_one({'_id': ObjectId(i)}, {
-                        '$set': {'userId': request.user_inf.user_id}})
-                new_activity = RecentActivity(
-                    isSuccess=True,
-                    title='Update face indexes',
-                    content='Update face indexes from main account',
-                    causeId=request.user_inf.user_id
-                )
+                        '$set': {'userId': request.user_id}})
+                new_activity = {
+                    'successState': 0,
+                    'title': 'Đăng ký khuôn mặt',
+                    'content': 'Cập nhật trích xuất đặc trưng của khuôn mặt',
+                    'causeId': request.user_id,
+                    'createdTime': datetime.now(),
+                    'modifiedTime': datetime.now()
+                }
                 activity_id = activities.insert_one(
-                    new_activity.dict()).inserted_id
+                    new_activity).inserted_id
                 returned_model = motion_pb2.ActivityRecent(
-                    is_success=new_activity.isSuccess,
+                    result=motion_pb2.ActivityRecent.Result.RESULT_SUCCESS,
                     activity_id=str(activity_id),
-                    title=new_activity.title,
-                    content=new_activity.content,
-                    created_time=new_activity.createdTime.strftime(
+                    title=new_activity['title'],
+                    content=new_activity['content'],
+                    created_time=new_activity['createdTime'].strftime(
                         "%Y-%m-%d %H:%M:%S"),
-                    modified_time=new_activity.modifiedTime.strftime(
+                    modified_time=new_activity['modifiedTime'].strftime(
                         "%Y-%m-%d %H:%M:%S")
                 )
         except Exception as err:
@@ -129,9 +133,14 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
     # motion detection + face recognition processing
     def FaceRecognizeStreaming(self, request_iterator, context):
         face_embedding = []
+        is_recognize_flow = False
         for ri in request_iterator:
             if ri.is_ping_msg:
-                face_embedding = get_face_indexes(ri.user_id)
+                if ri.is_recognize:
+                    face_embedding = get_face_indexes(ri.user_id)
+                    is_recognize_flow = True
+                else:
+                    faces.delete_many({'userId': ri.user_id})
                 logging.info('Pinged from client')
                 yield motion_pb2.MotionResponse(is_pong_msg=True)
                 logging.info('Ponged back to client')
@@ -139,8 +148,8 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
                 returned_model = motion_pb2.MotionResponse(
                     result=False, confidence=0.0, id='None')
                 try:
-                    # image = preprocess_raw_image(ri.image_payload)
-                    image = preprocess_png_image(ri.image_payload)
+                    image = preprocess_raw_image(ri.image_payload)
+                    # image = preprocess_png_image(ri.image_payload)
                     box = face_recognition.face_locations(image)
                     if len(box) > 0:
                         result = predict_process(image, box)
@@ -148,13 +157,21 @@ class MotionServicer(motion_pb2_grpc.MotionServicer):
                             print(
                                 f"predict {ri.expected_label} got {result.label} with confidence: {result.confidence}")
                             if result.label == ri.expected_label and result.confidence > 0.5:
-                                unknown_face_encoding = np.array(
-                                    result.encoding)
-                                match_results = face_recognition.compare_faces(
-                                    face_embedding, unknown_face_encoding)
-                                if match_results[0]:
+                                if is_recognize_flow:
+                                    print('[INFO] RECOGNIZE PROCESS...')
+                                    unknown_face_encoding = np.array(
+                                        result.encoding)
+                                    match_results = face_recognition.compare_faces(
+                                        face_embedding, unknown_face_encoding)
+                                    if match_results[0]:
+                                        returned_model = motion_pb2.MotionResponse(
+                                            result=True, confidence=result.confidence)
+                                else:
+                                    print('[INFO] UPDATE FACE EMBEDDING ')
+                                    encoding_id = faces.insert_one(
+                                        result.dict()).inserted_id
                                     returned_model = motion_pb2.MotionResponse(
-                                        result=True, confidence=result.confidence)
+                                        result=True, confidence=result.confidence, id=str(encoding_id))
                 except Exception as err:
                     logging.exception(err)
                 finally:

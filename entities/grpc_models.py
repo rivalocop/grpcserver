@@ -24,7 +24,7 @@ class User(BaseModel):
 
 
 class RecentActivity(BaseModel):
-    successState: SuccessState = 3
+    successState: Optional[SuccessState] = 3
     title: str
     content: str
     causeId: str
